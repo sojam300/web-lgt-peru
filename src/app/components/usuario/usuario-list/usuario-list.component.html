@@ -1,0 +1,189 @@
+<app-navbar></app-navbar>
+
+<div name="requerimiento-viaticos" class="pb-5 ">
+    <h1 class="py-5 fw-light fst-italic">Requerimiento de Viaticos</h1>
+
+    <div class="d-flex flex-wrap align-items-end col-12">
+        <div class="d-flex flex-wrap align-items-end gap-0 gap-md-2 col-12 col-md-auto flex-fill ">
+            <div class="form-floating p-1 p-md-0 m-0 mb-md-3 col-6 col-md-auto ">
+                <input  type="date" class="form-control"  placeholder="name@example.com">
+                <label for="busqueda">fecha desde</label>
+            </div>
+            <div class="form-floating p-1 p-md-0 m-0 mb-md-3 col-6 col-md-auto ">
+                <input  type="date" class="form-control"  placeholder="name@example.com">
+                <label for="busqueda">fecha hasta</label>
+            </div>
+            <div class="form-floating p-1 p-md-0 m-0 mb-md-3 col-6 col-md-auto">
+                <input  type="text" class="form-control" id="busqueda" placeholder="name@example.com">
+                <label for="busqueda">Busqueda</label>
+                
+            </div>
+            <div class="form-floating p-1 p-md-0 m-0 mb-md-3 col-6 col-md-auto ">            
+                <button class="btn btn-lg btn-outline-secondary ">
+                    <i class="bi bi-search fs-3"></i>
+                </button>            
+            </div>
+        </div>
+        <div class="d-flex flex-wrap  justify-content-end align-items-end gap-0 gap-md-2 col-12 col-md-auto flex-fill ">
+            <div class="form-floating p-1 p-md-0 m-0 mb-md-3 col-6 col-md-auto d-flex justify-content-end ">            
+                <button class="btn btn-lg btn-danger"  >
+                    Crear
+                </button>             
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="table-responsive  rounded ">
+        <table class="table table-hover ">
+            <thead style="position: sticky;top: 0">
+                <tr class="text-danger">
+                    <th scope="col" class="text-danger">Estado</th>
+                    <th scope="col" class="text-danger">Monto(S/)</th>
+                    <th scope="col" class="text-danger">Codigo</th>
+                    <th scope="col" class="text-danger hidden-col">Sede</th>
+                    <th scope="col" class="text-danger hidden-col">Persona</th>
+                </tr>
+            </thead>
+
+            <tbody class=" ">
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content align-items-center">
+                            <div class="circle-estado p-1 bg-secondary "></div>
+                            <div class="text-secondary">Pendiente</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-secondary">350.00</div>
+                            <div class="text-secondary">5 Dias</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-codigo">RV0001</div>
+                            <div class="text-secondary">01/02/2024 <br> 06/02/2024</div>
+                        </div>
+                    </td>
+                    <td class="hidden-col text-secondary" >Arequipa-Lima</td>
+                    <td class="hidden-col text-secondary" >Mark</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content align-items-center">
+                            <div class="circle-estado p-1 bg-secondary "></div>
+                            <div class="text-secondary">Pendiente</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-secondary">350.00</div>
+                            <div class="text-secondary">5 Dias</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-codigo">RV0001</div>
+                            <div class="text-secondary">01/02/2024 <br> 06/02/2024</div>
+                        </div>
+                    </td>
+                    <td class="hidden-col text-secondary">Arequipa-Lima</td>
+                    <td class="hidden-col text-secondary">Mark</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content align-items-center">
+                            <div class="circle-estado p-1 bg-secondary "></div>
+                            <div class="text-secondary">Pendiente</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-secondary">350.00</div>
+                            <div class="text-secondary">5 Dias</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-codigo">RV0001</div>
+                            <div class="text-secondary">01/02/2024 <br> 06/02/2024</div>
+                        </div>
+                    </td>
+                    <td class="hidden-col text-secondary">Arequipa-Lima</td>
+                    <td class="hidden-col text-secondary">Mark</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content align-items-center">
+                            <div class="circle-estado p-1 bg-secondary "></div>
+                            <div class="text-secondary">Pendiente</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-secondary">350.00</div>
+                            <div class="text-secondary">5 Dias</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-codigo">RV0001</div>
+                            <div class="text-secondary">01/02/2024 <br> 06/02/2024</div>
+                        </div>
+                    </td>
+                    <td class="hidden-col text-secondary">Arequipa-Lima</td>
+                    <td class="hidden-col text-secondary">Mark</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content align-items-center">
+                            <div class="circle-estado p-1 bg-secondary "></div>
+                            <div class="text-secondary">Pendiente</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-secondary">350.00</div>
+                            <div class="text-secondary">5 Dias</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-codigo">RV0001</div>
+                            <div class="text-secondary">01/02/2024 <br> 06/02/2024</div>
+                        </div>
+                    </td>
+                    <td class="hidden-col text-secondary">Arequipa-Lima</td>
+                    <td class="hidden-col text-secondary">Mark</td>
+                </tr>       <tr>
+                    <td>
+                        <div class="d-flex justify-content align-items-center">
+                            <div class="circle-estado p-1 bg-secondary "></div>
+                            <div class="text-secondary">Pendiente</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-secondary">350.00</div>
+                            <div class="text-secondary">5 Dias</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row d-flex justify-content align-items-center">
+                            <div class="text-codigo">RV0001</div>
+                            <div class="text-secondary">01/02/2024 <br> 06/02/2024</div>
+                        </div>
+                    </td>
+                    <td class="hidden-col text-secondary">Arequipa-Lima</td>
+                    <td class="hidden-col text-secondary">Mark</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+    </div>
+
+</div>
+

@@ -1,0 +1,53 @@
+<app-navbar></app-navbar>
+<div class="pt-3 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="p-3 border rounded text-center bg-light col-12 col-md-6">
+        <div>
+            Crear Usuario
+        </div>
+        
+        <div  class="form-floating mb-3">
+            <input type="text" [(ngModel)]="nombres" class="form-control" >
+            <label for="nombres">Nombres</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control"  [(ngModel)]="apellidos" >
+            <label for="floatingInput">Apellidos</label>
+        </div>
+        <div class="form-floating mb-3">
+            <select name="" id="" class="form-select" [(ngModel)]="tipo">
+                <option selected>Seleccion</option>
+                <option value="1">Administrador</option>
+                <option value="2">Usuario Basico</option>
+                
+            </select>
+            <label for="floatingInput">tipo</label>
+        </div>
+        <div class="form-floating mb-3">
+            <select name="" id="" class="form-select" [(ngModel)]="estado">
+                <option selected>Seleccion</option>
+                <option value="1">Activo</option>
+                <option value="2">Anulado</option>                
+            </select>
+            <label for="floatingInput">Estado</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" [(ngModel)]="correo">
+            <label for="floatingInput">Correo</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" [(ngModel)]="password" >
+            <label for="floatingPassword">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" [(ngModel)]="confirmpassword" >
+            <label for="floatingPassword">Repetir Password</label>
+        </div>
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-lg btn-danger" (click)="saveUsuario()"   >
+                <span *ngIf="!loading">Guardar</span> 
+                <app-spinner *ngIf="loading"></app-spinner>
+            </button>        
+        </div>
+    </div>
+    
+</div>

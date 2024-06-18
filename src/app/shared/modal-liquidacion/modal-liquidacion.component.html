@@ -1,0 +1,262 @@
+<!-- Modal -->
+<div class="modal fade  " id="modalLiquidacion" tabindex="-1" aria-labelledby="modalLiquidacionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-4 text-secondary" id="modalLiquidacionLabel">{{caja_detalle.id !=='' ? 'Editar' : 'Crear'}} Liquidacion </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               
+                <div class="row g-2">
+                    @if(caja_detalle.id_requerimiento !== '' && caja_detalle.id_requerimiento){
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <select 
+                                [(ngModel)]="caja_detalle.id_tipo_detalle_requerimiento"                     
+                                class="form-select" 
+                                placeholder="">
+                                    <option value="">Seleccion</option>
+                                    <option *ngFor="let tipoReqDet of tiposReqDetalle" [value]="tipoReqDet.id">{{ tipoReqDet.nombre }}  
+                                </select>
+                                <label >Tipo Gasto Requerimiento</label>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input 
+                            [(ngModel)]="caja_detalle.fecha" 
+                            (blur)="validarInputLiquidacion('fecha')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.fecha}"
+                            type="date" class="form-control"  placeholder="">
+                            <label >Fecha Documento</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <select [(ngModel)]="caja_detalle.id_comprobante" 
+                                (ngModelChange)="changeTipoDocumento(caja_detalle.id_comprobante)"
+                                (blur)="validarInputLiquidacion('id_comprobante')"
+                                [ngClass]="{'is-invalid': cajaDetalleFormVal.id_comprobante}"
+                                class="form-select" placeholder="">
+                                <option value="">Seleccion</option>
+                                <option *ngFor="let comprobante of comprobantes" [value]="comprobante.id">{{ comprobante.nombre }}    
+                            </select>
+                            <label >Tipo Documento</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input 
+                            [(ngModel)]="caja_detalle.serie"
+                            (blur)="validarInputLiquidacion('serie')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.serie}"
+                            type="text" class="form-control" placeholder="">
+                            <label >Serie</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input 
+                            [(ngModel)]="caja_detalle.numero"
+                            (blur)="validarInputLiquidacion('numero')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.numero}"
+                            type="text" class="form-control" placeholder="">
+                            <label >Numero</label>
+                        </div>
+                    </div>
+                 <div class="col-12 row g-2">
+                    <div class="col-auto">
+                        <div class="form-floating  ">
+                            <input 
+                            [(ngModel)]="caja_detalle.proveedor.razon_social"
+                            
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.id_proveedor}"
+                            type="text" class="form-control " placeholder=""  >
+                            <label >Buscar Razon Social</label>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="col-auto">            
+                            <button class="btn btn-lg btn-outline-secondary " (click)="buscarProveedorePorRS()">
+                                <i class="bi bi-search fs-3"></i>
+                            </button>         
+                        </div>
+                    </div>
+                    <div class="col-auto flex-fill">
+                        <div class="form-floating  flex-fill">
+                            <select 
+                            [(ngModel)]="caja_detalle.id_proveedor" 
+                            (blur)="validarInputLiquidacion('id_proveedor')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.id_proveedor}"
+                            class="form-select" placeholder="">
+                                @if(caja_detalle.id_proveedor){
+                                    <option value={{caja_detalle.id_proveedor}}>{{caja_detalle.proveedor.razon_social}}</option>
+                                }@else {
+                                    <option value="">Seleccion</option>
+                                }
+                                <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{ proveedor.razon_social }}              
+                            </select>
+                            <label >Razon Social</label>
+                        </div>
+                    </div>
+                </div>
+             
+                    <!-- <div class="col-auto">            
+                        <button class="btn btn-lg btn-outline-secondary " (click)="buscarProveedorePorRS()">
+                            <i class="bi bi-search fs-3"></i>
+                        </button>         
+                    </div> -->
+               
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <select 
+                            [(ngModel)]="caja_detalle.id_moneda"  
+                            (blur)="validarInputLiquidacion('id_moneda')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.id_moneda}"
+                            class="form-select" placeholder="">
+                                <option value="">Seleccion</option>
+                                <option *ngFor="let tipoMoneda of tiposMoneda" [value]="tipoMoneda.id">{{ tipoMoneda.nombre }}
+                            </select>
+                            <label >Tipo Moneda</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input 
+                            [(ngModel)]="caja_detalle.tipo_cambio_format"                    
+                            type="number" class="form-control readonly" placeholder="" [readOnly]="true">
+                            <label >Tipo cambio</label>
+                        </div>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input 
+                            [(ngModel)]="caja_detalle.total_format" 
+                            (blur)="validarInputLiquidacion('total_format')"
+                            (input)="changeTotal()"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.total_format}"
+                            type="number" class="form-control" placeholder="">
+                            <label >Total</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input [(ngModel)]="caja_detalle.total_igv_format" type="text" class="form-control readonly"  placeholder="" [readOnly]="true">
+                            <label >Total IGV</label>
+                        </div>
+                    </div>
+                    @if (caja_detalle.es_caja_chica === false) {
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="caja_detalle.tasa_detraccion_format" type="number" class="form-control readonly"  placeholder="" [readOnly]="true">
+                                <label >Tasa detracción</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="caja_detalle.total_detraccion_format" type="number" class="form-control readonly" placeholder="" readonly>
+                                <label >Total detracción</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="caja_detalle.tasa_retencion_format" type="number" class="form-control readonly" placeholder="" readonly>
+                                <label >Tasa retención</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="caja_detalle.total_retencion_format" type="number" class="form-control readonly" placeholder="" readonly>
+                                <label >Total retención</label>
+                            </div>
+                        </div>
+                    }
+                    
+                    <div class="col-6 col-md-4">
+                        <div class="form-floating ">
+                            <input [(ngModel)]="caja_detalle.a_pagar_format" type="text" class="form-control readonly" placeholder="" readonly>
+                            <label >A Pagar</label>
+                        </div>
+                    </div>
+               
+                    <div class="col-12">
+                        <div class="form-floating ">
+                            <textarea  
+                            [(ngModel)]="caja_detalle.glosa"                            
+                            class="form-control" placeholder="" ></textarea>
+                            <label >Glosa</label>
+                        </div>
+                    </div>
+             
+                    <div class="col-6 col-md-4 ">
+                        <div class="form-floating ">
+                            <select 
+                            [(ngModel)]="caja_detalle.id_gastos_n1" 
+                            (blur)="validarInputLiquidacion('id_gastos_n1')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.id_gastos_n1}"
+                            (change)="changeGrupoGastoN1(caja_detalle.id_gastos_n1)"  class="form-select" placeholder="">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let gasto of grupo_gastos" [value]="gasto.id">{{ gasto.nombre }}
+                            </select>
+                            <label >Cuenta Grupo 1</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 ">
+                        <div class="form-floating ">
+                            <select [(ngModel)]="caja_detalle.id_gastos_n2"
+                            (blur)="validarInputLiquidacion('id_gastos_n2')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.id_gastos_n2}"
+                            (change)="changeGrupoGastoN2(caja_detalle.id_gastos_n2)" class="form-select" placeholder="">
+                                 <!-- @if (caja_detalle.gastos_n2.nombre) {<option selected>{{caja_detalle.gastos_n2.nombre}}</option>}    -->
+                                <option value="">seleccione </option>
+                                <option *ngFor="let gasto of grupo_gastos2" [value]="gasto.gasto_hijo.id">{{ gasto.gasto_hijo.nombre}}              
+                            </select>
+                            <label >Cuenta Grupo 2</label>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 ">
+                        <div class="form-floating ">
+                            <select [(ngModel)]="caja_detalle.id_gastos_n3" 
+                            (blur)="validarInputLiquidacion('id_gastos_n3')"
+                            [ngClass]="{'is-invalid': cajaDetalleFormVal.id_gastos_n3}"
+                            class="form-select" placeholder="">
+                                <option value="">Seleccione</option>
+                                <option *ngFor="let gasto of grupo_gastos3" [value]="gasto.gasto_hijo.id">{{ gasto.gasto_hijo.nombre}}                    
+                            </select>
+                            <label >Cuenta Grupo 3</label>
+                        </div>
+                    </div>
+                    <div class="col-auto flex-fill mt-5 ">            
+                        <label for="formFileLg" class="form-label">Archivos</label>
+                        <input (change)="cargarArchivos($event)" class="form-control form-control-lg btn" accept="image/*, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx" type="file" multiple>     
+                    </div>
+                </div>
+        
+                <!-- <input type="file" (change)="cargarArchivos($event)" accept="image/*"> -->
+                <div class="col-12 d-flex flex-wrap justify-content-center">
+                    <div class="d-flex flex-column rounded m-3 " *ngFor="let archivo of caja_detalle.archivos">
+                        <!-- <div class="">
+                            <ng-container  *ngIf="archivo.tipo === 'imagen'" class=" ">
+                                <img [src]="archivo.contenido" alt="Imagen" class="card_image">
+                            </ng-container>
+                            <ng-container  *ngIf="archivo.tipo === 'pdf'" class=" ">
+                                <embed [src]="archivo.contenido" type="application/pdf" class="pdf_viewer" width="100%" height="600">
+                            </ng-container>
+                        </div> -->
+                        <button class="btn btn-light" (click)="descargarImagen(archivo.contenido, archivo.tipo, archivo.name)" >{{archivo.name}} </button>
+                    </div>
+                     
+                </div>
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" (click)="guardar()">{{caja_detalle.id !=='' ? 'Editar' : 'Crear'}}</button>
+            </div>
+        </div>
+    </div>
+</div>
+          

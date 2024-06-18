@@ -1,0 +1,13 @@
+.mat-icon-button {  
+    display: flex;
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */  
+    width: 55px; /* Ajusta el ancho del botón según tus preferencias */
+    height: 55px; /* Ajusta la altura del botón según tus preferencias */
+  }
+  .mat-icon-large {
+      height: 100%;
+      width: 100%;
+    font-size: 34px; /* Tamaño de la fuente del icono */
+    
+  } 

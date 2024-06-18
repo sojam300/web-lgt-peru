@@ -1,0 +1,115 @@
+<app-sidenav>
+  <div class="container-fluid">
+
+    <div class="d-flex justify-content-between pt-2">
+      <div>
+        <span class="fs-3  text-secondary">Crear Planilla de Movilidad</span>
+      </div>
+    </div>
+
+    <form [formGroup]="planillaMovilidadForm" (ngSubmit)="onSubmit()">
+      <div class="row g-2 mt-3">
+        <div class="col-6 col-md-3 ">
+          <mat-form-field class="input">
+            <mat-label>Codigo </mat-label>
+            <input type="text" matInput readonly formControlName="codigo" value="Autogenerado">
+          </mat-form-field>
+        </div>
+        <div class="col-6 col-md-3 ">
+          <mat-form-field class="input">
+            <mat-label>Usuario</mat-label>
+            <mat-select matInput formControlName="usuario" class="input">
+              @for (usuario of usuariosActives; track usuario) {
+              <mat-option [value]="usuario">{{usuario.nombres}} {{usuario.apellidos}}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-6 col-md-3">
+          <mat-form-field class="input">
+            <mat-label>Proveedor</mat-label>
+            <input type="text" matInput formControlName="proveedor" [matAutocomplete]="auto"
+              (keydown.enter)="onEnterProveedor($event)">
+            @if(isProveedorLoading){
+            <mat-icon matSuffix><i class="fa-solid fa-spinner spinner-input"></i> </mat-icon>
+            }
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+              @for (option of filteredOptions2 | async; track option) {
+              <mat-option [value]="option">{{option.razon_social}}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+        <div class="col-6 col-md-3 ">
+          <mat-form-field class="input" appearance="fill">
+            <mat-label>Fecha Emicion</mat-label>
+            <input matInput [matDatepicker]="pickerFechaemicion" formControlName="fecha_emicion">
+            <mat-hint>DD/MM/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="pickerFechaemicion"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFechaemicion></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="text-end mt-3 mb-2">
+        <button mat-stroked-button color="primary" type="button" (click)="openDialog()"><i class="fa-solid fa-plus"></i>
+          Detalle</button>
+      </div>
+
+      <section class="table-container ">
+        <table mat-table [dataSource]="dataSource">
+          <ng-container matColumnDef="N°">
+            <th mat-header-cell *matHeaderCellDef class="table-header"> N. </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+              {{ i + 1 }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Fecha de Gasto">
+            <th mat-header-cell *matHeaderCellDef class="table-header"> Fecha de Gasto </th>
+            <td mat-cell *matCellDef="let element">
+              {{formatearFecha(element.fecha_gasto)}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="Lugar Origen">
+            <th mat-header-cell *matHeaderCellDef>Lugar Origen</th>
+            <td mat-cell *matCellDef="let element">{{element.lugar_origen}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Lugar Destino">
+            <th mat-header-cell *matHeaderCellDef> Lugar Destino </th>
+            <td mat-cell *matCellDef="let element"> {{element.lugar_destino}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Motivo">
+            <th mat-header-cell *matHeaderCellDef> Motivo </th>
+            <td mat-cell *matCellDef="let element"> {{element.motivo}} </td>
+          </ng-container>
+          <ng-container matColumnDef="Monto">
+            <th mat-header-cell *matHeaderCellDef> Monto </th>
+            <td mat-cell *matCellDef="let element"> {{element.monto}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDialog(row)"></tr>
+        </table>
+      </section>
+
+      <div class="text-center my-3">
+        <button mat-stroked-button color="primary" type="button">Cancelar</button>
+        <button mat-flat-button color="primary" type="submit" class=" px-5 mx-2">
+          @if (planillaMovilidadForm.get('id')?.value) {
+          Editar
+          }@else{
+          Crear
+          }
+        </button>
+
+      </div>
+
+      <!-- </div> -->
+    </form>
+    <div *ngIf="isSubmitting" class="spinner-overlay">
+      <mat-spinner color="primary"></mat-spinner>
+    </div>
+  </div>
+</app-sidenav>

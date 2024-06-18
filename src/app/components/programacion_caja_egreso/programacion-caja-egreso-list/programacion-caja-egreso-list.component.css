@@ -1,0 +1,51 @@
+.large-button {
+    font-size: 16px; /* Tamaño de la fuente */
+    padding: 16px 32px; /* Padding */
+    min-width: 100px; /* Ancho mínimo */
+    min-height: 40px; /* Altura mínima */
+  }
+
+  .table-cell-center {
+    display: flex;
+    justify-content: start; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */  
+    /* width: 100px; */
+    height: 24px;/* Centra horizontalmente */
+  }
+
+  .mat-icon {  
+    display: flex;
+    justify-content: center; /* Centra horizontalmente el contenido */
+    align-items: center; /* Centra verticalmente el contenido */  
+    font-size: 14px;
+    width: 12px; /* Ajusta el ancho del botón según tus preferencias */
+    height: 12px; /* Ajusta la altura del botón según tus preferencias */
+  }
+  .mat-icon {
+    height: 100%;
+    width: 100%;
+  } 
+
+  table {
+    width: 100%;
+  }
+  
+  /* .contenido{
+   width: 95%;
+   margin: auto;
+  } */
+  /* .input_container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 10px;
+  }
+
+  .input_container .input {
+    width: 250px !important;
+  }
+  .content_btn_crear{
+    display: flex;
+    justify-content: flex-end; 
+    margin-bottom: 10px;
+  } */

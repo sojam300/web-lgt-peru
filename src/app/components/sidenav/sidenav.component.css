@@ -1,0 +1,89 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 2;
+    height: 60px;
+    /* border: 3px solid red; */
+    background: rgb(215,226,254);
+    
+  }
+  .main-menu-expansion{
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(0,93,186) !important
+  }
+  .btn-sidebar{
+    font-size: 16px;
+    color: rgb(0,93,186) !important
+  }
+  .menu-button {
+    margin-right: 16px;
+  }
+  
+  .spacer {
+    flex: 1 1 auto;
+    /* border: 3px solid red; */
+  }
+  
+  .sidenav-container {
+    /* height: 100vh; */
+    height: calc(100vh - 60px) ;
+    /* overflow: none; */
+    margin-top: 56px; /* Adjust based on toolbar height */
+    /* border: 3px solid ; */
+  }
+  
+  .sidenav {
+    width: 250px;
+    /* border: 3px solid red; */
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.6)
+  }
+  
+  .mat-drawer-backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+
+  .mat-accordion{
+    box-shadow: none;
+  }
+  
+
+
+
+  .sub-nav-list.expanded {
+    max-height: 500px; /* Ajustar según el contenido esperado */
+  }
+  
+  .sidenav-item {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    /* justify-content: center; */
+  }
+
+  .sidenav-text {
+    flex: 1; /* Para que el texto ocupe todo el espacio disponible */
+    margin-right: 16px; /* Margen entre el texto y el icono (ajustable según necesidades) */
+  }
+  .sidenav-icon {
+    /* Estilos opcionales para el icono */
+  }
+  
+
+  .mat-list-item.active {
+    background-color: var(--color-mat-azure); /* Color de fondo para el elemento activo */
+  }
+
+  .mat-list-item.active span{
+    color:var(--color-mat-azure2);
+  }
+
+
+
+
+  

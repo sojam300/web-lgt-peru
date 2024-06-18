@@ -1,0 +1,172 @@
+<app-sidenav>
+    <div class="contenido container-fluid">
+
+        <div name="requerimiento-viaticos" class="pb-5 ">
+            <div class="d-flex justify-content-between pt-5">
+                <div>
+                    <span class="fs-1 fw-light fst-italic text-secondary">Crear Caja Chica</span>
+                </div>
+                <div class="i-return " [routerLink]="['/caja_chica_list']">
+                    <i class="bi bi-arrow-return-right fw-bold fs-2 text-danger"></i>
+                </div>
+            </div>
+            <div class="d-flex col-12 py-3">
+                <div class=" d-flex no-wrap justify-content-center align-items-center box_estado"
+                    *ngFor="let estado of estadosCaja; let i = index" (click)="confirmBox(estado.id, estado.nombre)"
+                    [ngStyle]="{ '--color-var': estado.indicador }">
+                    <div class="btn_estado " [ngClass]="{'active': estado.existe ? true: false}"></div>
+                    <label class="">{{estado.nombre}}</label>
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-6 col-md-3">
+                    <div class="form-floating ">
+                        <input [(ngModel)]="caja_chica.codigo" type="text" class="form-control readonly"
+                            [readOnly]="true">
+                        <label>Codigo Caja</label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="form-floating ">
+                        <select [(ngModel)]="caja_chica.id_tipo_gasto" (blur)="validarInputCajaChica('id_tipo_gasto')"
+                            [ngClass]="{'is-invalid': caja_chica_form_val.id_tipo_gasto}" class="form-select">
+                            <option value="">Seleccion</option>
+                            <option *ngFor="let tipoGasto of tiposGasto" [value]="tipoGasto.id">{{ tipoGasto.nombre }}
+                            </option>
+                        </select>
+                        <label>Tipo Gasto</label>
+                    </div>
+
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="form-floating ">
+                        <select [(ngModel)]="caja_chica.id_sede" (blur)="validarInputCajaChica('id_sede')"
+                            [ngClass]="{'is-invalid': caja_chica_form_val.id_sede}" class="form-select">
+                            <option value="">Seleccion</option>
+                            <option *ngFor="let sede of sedes" [value]="sede.id">{{ sede.nombre }}</option>
+                        </select>
+                        <label>Sede</label>
+                    </div>
+                </div>
+
+                <div class="col-6 col-md-3">
+                    <div class="form-floating ">
+                        <select (blur)="validarInputCajaChica('id_empresa')"
+                            [ngClass]="{'is-invalid': caja_chica_form_val.id_empresa}"
+                            [(ngModel)]="caja_chica.id_empresa" class="form-select">
+                            <option value="">Seleccion</option>
+                            <option *ngFor="let empresa of empresas" [value]="empresa.id">{{ empresa.nombre }}</option>
+                        </select>
+                        <label>Empresa</label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="form-floating ">
+                        <select (blur)="validarInputCajaChica('id_forma_pago')"
+                            [ngClass]="{'is-invalid': caja_chica_form_val.id_forma_pago}"
+                            [(ngModel)]="caja_chica.id_forma_pago" class="form-select">
+                            <option value="">Seleccion</option>
+                            <option *ngFor="let formaPago of formasPago" [value]="formaPago.id">{{ formaPago.descripcion
+                                }}</option>
+                        </select>
+                        <label>Forma de pago</label>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="form-floating ">
+                        <select (blur)="validarInputCajaChica('id_usuario')"
+                            [ngClass]="{'is-invalid': caja_chica_form_val.id_usuario}"
+                            [(ngModel)]="caja_chica.id_usuario" class="form-select">
+                            <option value="">Seleccion</option>
+                            <option *ngFor="let usuarioActive of usuariosActives" [value]="usuarioActive.id">{{
+                                usuarioActive.nombres+' '+usuarioActive.apellidos }}</option>
+                        </select>
+                        <label>Ejecutado por</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="d-flex flex-row justify-content-center  my-5">
+                <div *ngFor="let metodoRembolso of metodosRembolso" class="form-check">
+                    <input class="p-1 m-1 form-check-input" type="checkbox" [value]="metodoRembolso.id"
+                        [checked]="metodoRembolso.existe" id={{metodoRembolso.nombre}}
+                        (click)="onChangeMetodoRembolso($event, metodoRembolso.id)">
+                    <label class="p-0 m-0 form-check-label" for={{metodoRembolso.nombre}}>
+                        {{metodoRembolso.nombre}}
+                    </label>
+                </div>
+            </div>
+            <div class="text-end justify-content-center col-12 mt-2 mb-5">
+                <button class="btn btn-lg btn-danger" (click)="guardarCaja()">
+                    guardar
+                </button>
+            </div>
+        </div>
+        <div class="row my-2 g-2 align-items-end">
+            <div class="col-auto">
+                <h3 class="text-secondary fst-italic">Liquidación</h3>
+            </div>
+
+            <div class="col-6 col-md-3 text-end flex-fill">
+                <button class="btn btn-outline-danger" (click)="openModalLiquidacion()">
+                    <i class="fa-solid fa-plus fs-4 mx-1"></i>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="table-responsive  rounded  mb-5">
+            <table class="table table-hover ">
+                <thead style="position: sticky;top: 0">
+                    <tr>
+
+                        <th scope="col" class="text-danger ">#</th>
+                        <th scope="col" class="text-danger ">Total <br> <span
+                                class=" bg-secondary text-light rounded-pill p-1 fw-light">S/
+                                {{resumen_total_format}}</span></th>
+                        <th scope="col" class="text-danger ">Igv <br> <span
+                                class=" bg-secondary text-light rounded-pill p-1 fw-light">S/
+                                {{resumen_igv_format}}</span></th>
+                        <th scope="col" class="text-danger ">A Pagar <br> <span
+                                class=" bg-secondary text-light rounded-pill p-1 fw-light">S/
+                                {{resumen_a_pagar_format}}</span></th>
+                        <th scope="col" class="text-danger ">Moneda</th>
+                        <th scope="col" class="text-danger ">Documento</th>
+                        <th scope="col" class="text-danger ">Tipo Documento</th>
+                        <th scope="col" class="text-danger ">Razon Social</th>
+                        <th scope="col" class="text-danger ">Divisionaria 1</th>
+                        <th scope="col" class="text-danger ">Divisionaria 2</th>
+                        <th scope="col" class="text-danger ">Divisionaria 3</th>
+
+                    </tr>
+                </thead>
+
+                <tbody class=" ">
+                    <tr *ngFor="let liquidacion of liquidaciones; let i = index"
+                        (click)="openModalLiquidacionEdit(liquidacion.id)">
+                        <td class="text-center ">
+                            <div class="d-flex no-wrap justify-content-center align-items-center">
+                                <span>{{i+1}}</span>
+                                <!-- <i class="fa-solid fa-circle text-secondary mx-1"></i> -->
+                            </div>
+                        </td>
+                        <td class=" ">{{liquidacion.total_format}}</td>
+                        <td class=" ">{{liquidacion.total_igv_format}}</td>
+                        <td class=" ">{{liquidacion.a_pagar_format}}</td>
+                        <td class=" ">{{liquidacion.moneda.nombre}}</td>
+                        <td class=" ">{{liquidacion.serie}}-{{liquidacion.numero}}</td>
+                        <td>{{liquidacion.comprobante.nombre}}</td>
+                        <td class=" ">{{liquidacion.proveedor.razon_social}}</td>
+                        <td class=" ">{{liquidacion.gastos_n1.nombre}}</td>
+                        <td class=" ">{{liquidacion.gastos_n2.nombre}}</td>
+                        <td class=" ">{{liquidacion.gastos_n3.nombre}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <app-modal-liquidacion></app-modal-liquidacion>
+    </div>
+</app-sidenav>

@@ -1,1 +1,305 @@
 /* You can add global styles to this file, and also import other style files */
+*{    
+   
+        font-family: "Rubik", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: <weight>;
+        font-style: normal;
+    
+}
+
+:root {
+  --color-main: #DC3545;
+  --color-red: #DC3545;
+  --color-gray: #b1b1b1;
+  --color-gray1:rgb(145, 145, 145);
+  --color-gray1-trasparent: rgba(145, 145, 145, 0.5);
+  --color-gray2: #6C757D;
+  --color-black: #101010;
+  --color-blue: #0062d2;
+  --color-success: rgb(0, 113, 9);
+  --color-var: #6C757D;
+  --color-mat-primary: rgb(215,227,255);
+  --color-mat-azure: rgb(215,226,254);
+  --color-mat-azure2: rgb(0,92,187);
+  overflow: hidden ;
+}
+
+.input{
+  width: 100% !important;
+  /* font-weight: 500 !important;
+  color: rgb(65, 65, 65) !important; */
+}
+.input input, select, textarea , .select {
+  font-weight: 500 !important;
+  /* color: rgb(89, 89, 89) !important; */
+}
+
+
+
+.active {
+    font-weight: 700 !important;
+}
+.circle-estado {
+    width: 10px;
+    height: 10px;
+    margin: 5px !important;
+    border-radius: 50%;
+    background-color: var(--color-red); /* Cambia el color de fondo según tus necesidades */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff; /* Cambia el color del texto según tus necesidades */
+  }
+.table-responsive {
+    min-height: 200px !important;
+    max-height: 400px !important;
+    /* background-color: white; */
+    /* border-collapse: collapse; */
+}
+table {
+  width: 100%;
+}
+
+/* td */
+.box_large {
+  min-width: 170px;
+}
+/* input, select, textarea  {
+
+} */
+
+
+.readonly{
+  background: rgb(225, 225, 225) !important;
+}
+
+.icon {
+  z-index: 1000;
+  cursor: pointer;
+}
+.icon:hover {
+  transition: 0.1s all ;
+  transform: scale(1.1);
+}
+
+.col-fixed{
+  max-width: 100px;
+  min-width: 80px;
+  position: sticky; 
+  right: 0; 
+  padding: 0;
+  margin: 0;
+}
+.checkbox{
+  border: 1px solid var(--color-success);
+  border-radius: 10%;
+  width: 25px;
+  height: 25px;
+  /* margin: 5px; */
+  
+}
+
+.box-checkbox:hover .checkbox{
+  transform: scale(1.05);
+  transition: 0.3s all ;
+  
+  /* box-shadow: 0px 0px 1px 1px rgba(0, 38, 96, 0.937) */
+}
+
+.estado_pendiente{
+  border: 3.5px solid var(--color-gray2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  
+}
+
+.box_estado:hover .btn_estado{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-var);
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+.box_estado .active{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-var);
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+.btn_estado{
+  border: 3.5px solid var(--color-var);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+  
+}
+.box-pendiente:hover .estado_pendiente{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-gray2);;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+.estado_observado{
+  border: 3.5px solid var(--color-main);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+
+.box-observado:hover .estado_observado{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-main);;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+.estado_aprobado{
+  border: 3.5px solid var(--color-success);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  margin: 5px;
+}
+
+
+.box-aprobado:hover .estado_aprobado{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-success);;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+
+}
+.box-pendiente .active{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-gray2);;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+.box-observado .active{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-main);;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+.box-aprobado .active{
+  transform: scale(1.1);
+  transition: 0.1s all ;
+  background: var(--color-success);;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+}
+
+.card_image{
+  
+  width: 300px;
+  height: 400px;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+.table-circle-estado{
+  color: var(--color-var);
+  
+}
+@media (max-width: 750px) {
+    .hidden-col {
+      display: none;
+    }
+    .col-fixed{
+      max-width: 80px
+    }
+
+  }
+
+
+.i-return{
+  transform: rotate(180deg);
+}
+.i-return:hover{
+  cursor: pointer;
+      transform:  rotate(180deg) scale(1.1);
+      transition: 0.1s all ;
+      shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.6)
+
+}
+
+html, body { height: 100%; }
+/* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+body{
+  /* background: rgb(244, 244, 244)!important; */
+  
+}
+i{
+  font-size: 22px;
+}
+.spinner {
+  display: inline-block; /* Ensure the spinner is inline-block */
+  font-size: 2rem; /* Adjust the size as needed */
+  animation: spin 1.5s linear infinite; /* Spin animation with a duration of 1s, running infinitely */
+}
+.spinner-input {
+  /* color: rgb(0,92,187); */
+  display: inline-block; /* Ensure the spinner is inline-block */
+  font-size: 1.3rem; /* Adjust the size as needed */
+  animation: spin 1.5s linear infinite; /* Spin animation with a duration of 1s, running infinitely */
+}
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* ANGULAR MATERIAL */
+
+.table-container {
+  width: 100%;
+  height: 350px;
+  margin-bottom: 10px;
+  overflow: auto;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.6)
+}
+.table-container td {
+    font-weight: 300;
+}
+
+
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid gray;
+  border-top: 1px solid gray;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+
+.mat-grid {
+  width: 100%;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+
+

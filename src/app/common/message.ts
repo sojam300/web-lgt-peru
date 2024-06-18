@@ -1,0 +1,9 @@
+export const agregado = 'Agregado';
+export const editado = 'Editado';
+export const eliminado = 'Eliminado';
+export const removido = 'Removido';
+export const creado = 'Creado';
+export const debeCrearAntesUnaCaja = 'Debe crear antes una caja.';
+export const debeCrearAntesUnaSolicitud = 'Debe crear antes una solicitud.';
+export const debeExistirUnaCaja = 'Debe existir una caja asociada.';
+export const completarCamposRequeridos = 'Por favor completar los campos requeridos.';

@@ -1,0 +1,940 @@
+<app-navbar></app-navbar>
+<div name="requerimiento-viaticos" class="pb-5 ">
+    <div class="d-flex justify-content-between pt-5"> 
+        <div>
+          <span class="fs-1 fw-light fst-italic text-secondary">{{requerimiento.id ? 'Edición': 'Creación'}} Requerimiento de Viaticos</span>
+        </div>
+        <div class="i-return " [routerLink]="['/requerimiento_viaticos_list']">
+        <i class="bi bi-arrow-return-right fw-bold fs-2 text-danger"></i>
+        </div>
+    </div>
+    <div class="d-flex col-12 py-3"  >
+        <div class=" d-flex no-wrap justify-content-center align-items-center box_estado" 
+            *ngFor="let estado of estadosRequemiento; let i = index"
+            (click)="confirmBox(estado.id, estado.nombre)"       
+            [ngStyle]="{ '--color-var': estado.indicador }"
+        >
+            <div class="btn_estado " 
+            [ngClass]="{'active': estado.existe ? true: false}"
+     
+            ></div>
+            <label class="">{{estado.nombre}}</label>
+        </div>       
+    </div>
+    <!-- <div class="d-flex col-12 py-3">
+        <div class=" d-flex no-wrap justify-content-center align-items-center box-pendiente"
+            (click)="changeEstadoRequerimiento(1)"
+        >
+            <div class="estado_pendiente" [ngClass]="{'active': requerimiento.estado.valor === 1 ? true: false }"></div>
+            <label class="">Pendiente</label>
+        </div>
+        <div class="d-flex no-wrap justify-content-center align-items-center box-observado"
+        (click)="changeEstadoRequerimiento(2)"
+        >
+            <div class="estado_observado" [ngClass]="{'active': requerimiento.estado.valor === 2 ? true: false }"></div>
+            <label>Obsevado</label>
+        </div>
+        <div class="d-flex no-wrap justify-content-center align-items-center box-aprobado"
+        (click)="changeEstadoRequerimiento(3)"
+        >
+            <div class="estado_aprobado" [ngClass]="{'active': requerimiento.estado.valor === 3 ? true: false }"></div>
+            <label>Aprobado</label>
+        </div>
+    </div> -->
+    
+    <div class="row g-2">
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <input [(ngModel)]="requerimiento.fecha_inicio" [ngClass]="{'is-invalid': requerimientoVal.fecha_inicio}"
+                    (blur)="validarFormRequerimiento('fecha_inicio')" (ngModelChange)="onChangeReqFechaInicio($event)"
+                    type="date" class="form-control">
+                <label>Fecha Inicio</label>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <input [(ngModel)]="requerimiento.fecha_fin" [ngClass]="{'is-invalid': requerimientoVal.fecha_fin}"
+                    (blur)="validarFormRequerimiento('fecha_fin')" (ngModelChange)="onChangeReqFechaFin()"
+                    [min]="requerimiento.fecha_inicio" type="date" class="form-control">
+                <label>Fecha Fin</label>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <input [(ngModel)]="requerimiento.total_dias" type="text" class="form-control" placeholder="dias"
+                    readonly>
+                <label>Total días</label>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <select [(ngModel)]="requerimiento.id_area" [ngClass]="{'is-invalid': requerimientoVal.id_area}"
+                    (blur)="validarFormRequerimiento('id_area')" class="form-select">
+                    <option value="">Seleccion</option>
+                    <option *ngFor="let area of areas" [value]="area.area.id">{{ area.area.nombre }}</option>
+                </select>
+                <label>Area</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-floating ">
+                <textarea [(ngModel)]="requerimiento.descripcion"
+                    [ngClass]="{'is-invalid': requerimientoVal.descripcion}"
+                    (blur)="validarFormRequerimiento('descripcion')" class="form-control" placeholder="" ></textarea>
+                <label>Descripcion de Ruta</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="form-floating col-md">
+                <textarea [(ngModel)]="requerimiento.observacion" class="form-control" readonly></textarea>
+                <label>Comentarios Evaluacion</label>
+            </div>
+        </div>
+    </div>
+    <div class="text-end justify-content-center col-12 mt-2 mb-5">
+        <button (click)="guardar()" class="btn btn-lg btn-danger">
+            @if(requerimiento.id){
+                Editar
+            }@else {
+                Guardar
+            }
+        </button>
+    </div>
+
+
+    <div class="row mb-3 g-2 align-items-end mt-4 ">
+        <div class="col-auto">
+            <h3 class="text-secondary fst-italic">Pasajes <span class="fw-light fs-6 fst-italic">Aereos o terrestres</span></h3>
+        </div>
+
+        <div class="col-6 col-md-3 text-end flex-fill">
+            <button class="btn btn-outline-danger" (click)="openModalPasajesAgregar()">
+                <i class="fa-solid fa-plus fs-4 mx-1"></i>
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive  rounded ">
+        <table class="table table-hover ">
+            <thead style="position: sticky;top: 0">
+                <tr>
+                    <th scope="col" class="text-danger text-center">#</th>
+                    <th scope="col" class="text-danger">Fecha</th>
+                    <th scope="col" class="text-danger">Origen-Destino</th>
+                    <th scope="col" class="text-danger">Monto S/. {{pasaje_monto}}</th>
+                    <!-- <th></th> -->
+                </tr>
+            </thead>
+
+            <tbody class=" ">
+
+                <tr *ngFor="let pasaje of pasajes; let i = index" (click)="openModalPasaje(pasaje.id)">
+                    <td class="text-center ">
+                        <div class="d-flex no-wrap justify-content-center align-items-center">
+                            <span>{{i+1}}</span>
+                            <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                        </div>
+                    </td>
+                    <td class="">{{pasaje.fecha}}</td>
+                    <td class="">{{pasaje.ciudad_origen.nombre}}-{{pasaje.ciudad_destino.nombre}}</td>
+                    <td class="">{{pasaje.monto_format}}</td>
+                    <!-- <td class="text-center col-fixed m-0 p-0">
+                        <div class="d-flex no-wrap">
+                            <app-edit-icon (click)="openModaRutaEditar(i)" ></app-edit-icon>
+                            <app-delete-icon (click)="openModanEliminarRuta(i)"></app-delete-icon>
+                        </div>                                               
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!-- Modal Form Pasajes -->
+    <div class="modal fade " id="modalFormPasajes" tabindex="-1" aria-labelledby="modalFormPasajesLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-4 text-secondary" id="modalFormPasajesLabel">
+                        <!-- {{isDeleteModalRuta===true ? 'Eliminar': ruta.index>=0 ? 'Editar': 'Agregar'}} -->
+                        Pasajes
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2">
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="pasaje.fecha" type="date"
+                                    [ngClass]="{'is-invalid': pasajesFormVal.fecha}"
+                                    (blur)="validarInputPasaje('fecha')" 
+                                    [min]="requerimiento.fecha_inicio"
+                                    [max]="requerimiento.fecha_fin" class="form-control" placeholder="">
+                                <label>Fecha</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="form-floating">
+                                <select [(ngModel)]="pasaje.id_ciudad_origen"
+                                    [ngClass]="{'is-invalid': pasajesFormVal.id_ciudad_origen}"
+                                    (blur)="validarInputPasaje('id_ciudad_origen')" class="form-select" placeholder="">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">{{ ciudad.nombre }}
+                                    </option>
+                                </select>
+                                <label>Ciudad Origen</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="form-floating">
+                                <select [(ngModel)]="pasaje.id_ciudad_destino"
+                                    [ngClass]="{'is-invalid': pasajesFormVal.id_ciudad_destino}"
+                                    (blur)="validarInputPasaje('id_ciudad_destino')" class="form-select" placeholder="">
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">{{ ciudad.nombre }}
+                                    </option>
+                                </select>
+                                <label>Ciudad Destino</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="pasaje.monto_format"
+                                    [ngClass]="{'is-invalid': pasajesFormVal.monto_format}"
+                                    (blur)="validarInputPasaje('monto_format')" type="number" class="form-control"
+                                    placeholder="monto_format" required="true">
+                                <label>Monto</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @if(pasaje.id){
+                    <button type="button" class="btn btn-danger mx-2" (click)="changePasaje('remove', pasaje.id)">
+                        Remover
+                    </button>
+                    }
+                    <button type="button" class="btn btn-lg btn-outline-secondary mx-2"
+                        data-bs-dismiss="modal">Cerrar</button>
+
+                    <button type="button" class="btn btn-lg btn-secondary mx-2"
+                        (click)="changePasaje(pasaje.id  ? 'edit': 'add', pasaje.id )">
+                        {{pasaje.id ? 'Editar': 'Agregar'}}
+                    </button>
+
+                    <!-- <button type="button" class="btn btn-secondary" (click)="agregarRuta('add')">
+                    Agregar
+                </button> -->
+                    <!-- <button type="button" [ngClass]="{'btn-secondary': !isDeleteModalRuta, 'btn-danger': isDeleteModalRuta}"  class="btn" (click)="agregarRuta()">
+                    {{isDeleteModalRuta===true ? 'Eliminar': ruta.index>=0 ? 'Editar': 'Agregar'}}
+                </button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3 g-2 align-items-end mt-4">
+        <div class="col-auto">
+            <h3 class="text-secondary fst-italic">Hospedajes</h3>
+            
+        </div>
+
+        <div class="col-6 col-md-3 text-end flex-fill">
+            <button class="btn btn-outline-danger" (click)="openModalHospedajeAgregar()">
+                <i class="fa-solid fa-plus fs-4 mx-1"></i>
+            </button>
+
+        </div>
+    </div>
+    <div class="table-responsive  rounded ">
+        <table class="table table-hover ">
+            <thead style="position: sticky;top: 0">
+                <tr>
+
+                    <th scope="col" class="text-danger text-center">#</th>
+                    <th scope="col" class="text-danger">Ciudad</th>
+                    <th scope="col" class="text-danger">Fecha Inicio</th>
+                    <th scope="col" class="text-danger">Fecha Fín</th>
+                    <th scope="col" class="text-danger">Noches</th>
+                    <th scope="col" class="text-danger">Monto S/. {{hospedaje_monto}} </th>
+                    <th scope="col" class="text-danger">Gestionado</th>
+                </tr>
+            </thead>
+
+            <tbody class=" ">
+                <tr *ngFor="let hospedaje of hospedajes; let i = index"
+                    (click)="openModalHospedaje(hospedaje.id)"
+                >
+                    <td class="text-center ">
+                        <div class="d-flex no-wrap justify-content-center align-items-center">
+                            <span>{{i+1}}</span>
+                            <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                        </div>
+                    </td>
+                    <td class=" ">{{hospedaje.ciudad.nombre}}</td>
+                    <td class=" ">{{hospedaje.fecha_inicio}}</td>
+                    <td class=" ">{{hospedaje.fecha_fin}}</td>
+                    <td class=" ">{{hospedaje.noches}}</td>
+                    <td class=" ">{{hospedaje.monto_format}}</td>
+                    <td class=" ">
+                        @if(hospedaje.es_gestionado===true){
+                            <i class="fa-solid fa-check text-success"></i>
+                        }
+                    </td>
+                    <!-- <td class="text-center col-fixed m-0 p-0">
+                        <div class="d-flex no-wrap">
+                            <app-edit-icon (click)="editDetalleOpenModal(i)" ></app-edit-icon>
+                            <app-delete-icon (click)="openModanEliminarDetalle(i)"></app-delete-icon>
+                        </div>                                               
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Form Hospedaje -->
+    <div class="modal fade " id="modalFormHospedaje" tabindex="-1" aria-labelledby="modalFormHospedajeLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-4 text-secondary" id="modalFormHospedajeLabel">
+                        Hospedaje
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-12 d-flex">
+                            <div class="form-floating flex-fill">
+                                <textarea class="form-control" placeholder="" 
+                                    [(ngModel)]="detalle.observacion"></textarea>
+                                <label>Observacion</label>                              
+                            </div>
+                            <button class="btn" (click)="setObservacionDetalle()" >
+                                <i class="fa-solid fa-eye text-danger"></i>
+                            </button>
+                        </div>
+                    
+                        <!-- <div class="col-12 col-md-4 d-flex flex-fill justify-content-end">                            
+                            <button class="btn btn-lg btn-outline-danger text-danger"  >
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                          </div> -->
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating">
+                                <select class="form-select" [(ngModel)]="hospedaje.id_ciudad"
+                                    [ngClass]="{'is-invalid': hospedajeFormVal.id_ciudad}"
+                                    (ngModelChange)="onChangeHospedajeCiudad($event)"
+                                    (blur)="validarInputHospedaje('id_ciudad')"                                 
+                                    >
+                                    <option value="">Seleccione</option>
+                                    <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">{{ ciudad.nombre }}
+                                    </option>
+
+                                </select>
+                                <label>Ciudad </label>
+                            </div>
+                        </div>
+                        <!-- <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input [(ngModel)]="detalle.fecha" [ngClass]="{'is-invalid': detalleVal.fecha}"
+                                    (blur)="validarFormDetalle('fecha')" type="date" class="form-control"
+                                    placeholder="Fecha">
+                                <label>Fecha</label>
+                            </div>
+                        </div> -->
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input 
+                                [(ngModel)]="hospedaje.fecha_inicio" 
+                                [ngClass]="{'is-invalid': hospedajeFormVal.fecha_inicio}"
+                                (blur)="validarInputHospedaje('fecha_inicio')" 
+                                (ngModelChange)="onChangeReqFechaInicio($event)"
+                                type="date" class="form-control">
+                                <label>Fecha Inicio</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">           
+                                <input 
+                                [(ngModel)]="hospedaje.fecha_fin" 
+                                [ngClass]="{'is-invalid': hospedajeFormVal.fecha_fin}"
+                                (blur)="validarInputHospedaje('fecha_fin')" 
+                                (ngModelChange)="onChangeHospedajeFechaFin()"
+                                [min]="requerimiento.fecha_inicio"
+                                type="date" class="form-control">
+                                <label>Fecha Fin</label>
+                            </div>
+                        </div>
+                    
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder=""   
+                                [(ngModel)]="hospedaje.noches" 
+                                [ngClass]="{'readonly': true}"                        
+                                    [readonly]="true">
+                                <label>Noches</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="form-floating ">
+                                <input type="number" class="form-control" placeholder=""
+                                    [(ngModel)]="hospedaje.monto_format"
+                                    [ngClass]="{'is-invalid': hospedajeFormVal.monto_format}"
+                                     (blur)="validarInputHospedaje('monto_format')">
+                                <label>Monto</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class=" d-flex no-wrap justify-content-center align-items-center box-checkbox"
+                                (click)="changeGestionadoHospedaje()">
+                            <div class="checkbox text-center" [ngClass]="{'active': false }"> 
+                                @if(hospedaje.es_gestionado === true){
+                                    <i class="fa-solid fa-check text-success"></i>
+                                }                                                            
+                            </div>
+                           <label class="">Gestionado</label>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                @if(isDeleteModalDetalle===false){
+                    <button type="button" class="btn btn-secondary" (click)="agregarDetalle()">{{detalle.index>=0 ? 'Editar': 'Agregar'}}</button>
+                }@else {
+                    <button type="button" class="btn btn-danger" (click)="agregarDetalle()">Eliminar</button>
+                }  
+                 -->
+                    @if(hospedaje.id){
+                    <button type="button" class="btn btn-danger mx-2" (click)="changeHospedaje('remove', hospedaje.id)">
+                        Remover
+                    </button>
+                    }
+                    <button type="button" class="btn btn-lg btn-outline-secondary mx-2"
+                        data-bs-dismiss="modal">Cerrar</button>
+
+                    <button type="button" class="btn btn-lg btn-secondary mx-2"
+                        (click)="changeHospedaje(hospedaje.id ? 'edit': 'add', hospedaje.id)">
+                        {{hospedaje.id ? 'Editar': 'Agregar'}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3 g-2 align-items-end mt-4">
+        <div class="col-auto">
+            <h3 class="text-secondary fst-italic">Alimentación</h3>
+        </div>
+
+        <div class="col-6 col-md-3 text-end flex-fill">
+            <button class="btn btn-outline-danger" (click)="openModalAlimentacionAgregar()">
+                <i class="fa-solid fa-plus fs-4 mx-1"></i>
+            </button>
+
+        </div>
+    </div>
+    <div class="table-responsive  rounded ">
+        <table class="table table-hover ">
+            <thead style="position: sticky;top: 0">
+                <tr>
+
+                    <th scope="col" class="text-danger text-center">#</th>
+                    <th scope="col" class="text-danger">Fecha Inicio</th>
+                    <th scope="col" class="text-danger">Fecha Fin</th>
+                    <th scope="col" class="text-danger">Dias</th>
+                    <th scope="col" class="text-danger">Detalle</th>
+                    <th scope="col" class="text-danger">Monto S/. {{alimento_monto}} </th>
+                    <!-- <th scope="col" class="col-fixed text-center m-0 p-0 "></th> -->
+                </tr>
+            </thead>
+
+            <tbody class=" ">
+                <tr *ngFor="let alimento of alimentos; let i = index"
+                    (click)="openModalAlimentacionEdit(i)"
+                >
+                    <td class="text-center ">
+                        <div class="d-flex no-wrap justify-content-center align-items-center">
+                            <span>{{i+1}}</span>
+                            <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                        </div>
+                    </td>
+                    <td class=" ">{{alimento.fecha_inicio}}</td>
+                    <td class=" ">{{alimento.fecha_fin}}</td>
+                    <td class=" ">{{alimento.dias}}</td>
+                    <td class=" ">{{alimento.detalle}}</td>
+                    <td class=" ">{{alimento.monto_format}}</td>
+                    <!-- <td class="text-center col-fixed m-0 p-0">
+                        <div class="d-flex no-wrap">
+                            <app-edit-icon (click)="editDetalleOpenModal(i)" ></app-edit-icon>
+                            <app-delete-icon (click)="openModanEliminarDetalle(i)"></app-delete-icon>
+                        </div>                                               
+                    </td> -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+ <!-- Modal Form Alimentacion -->
+ <div class="modal fade " id="modalFormAlimentacion" tabindex="-1" aria-labelledby="modalFormAlimentacionLabel"
+ aria-hidden="true">
+ <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h1 class="modal-title fs-4 text-secondary" id="modalFormAlimentacionLabel">
+                 Alimentación
+             </h1>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+             <div class="row g-2 mb-2">
+                 <div class="col-12 col-md-12 d-flex">
+                     <div class="form-floating flex-fill">
+                         <textarea class="form-control" placeholder="" 
+                             [(ngModel)]="detalle.observacion"></textarea>
+                         <label>Observacion</label>                              
+                     </div>
+                     <button class="btn" (click)="setObservacionDetalle()" >
+                         <i class="fa-solid fa-eye text-danger"></i>
+                     </button>
+                 </div>             
+             </div>
+
+             <div class="row g-2">                 
+                 <div class="col-6 col-md-4">
+                     <div class="form-floating ">
+                         <input 
+                         [(ngModel)]="alimento.fecha_inicio" 
+                         [ngClass]="{'is-invalid': alimentoFormVal.fecha_inicio}"
+                         (blur)="validarInputAlimento('fecha_inicio')" 
+                        (ngModelChange)="setDiasAlimentacion()"
+                        [min]="requerimiento.fecha_inicio"
+                        [max]="requerimiento.fecha_fin"
+                         type="date" class="form-control">
+                     <label>Fecha Inicio</label>
+                  
+                     </div>
+                 </div>
+                 <div class="col-6 col-md-4">
+                     <div class="form-floating ">         
+                     <input 
+                     [(ngModel)]="alimento.fecha_fin" 
+                     [ngClass]="{'is-invalid': alimentoFormVal.fecha_fin}"
+                     (ngModelChange)="setDiasAlimentacion()"
+                     (blur)="validarInputAlimento('fecha_fin')" 
+                     [min]="requerimiento.fecha_inicio"
+                     [max]="requerimiento.fecha_fin"
+                         type="date" class="form-control">
+                     <label>Fecha Fin</label>
+                     </div>
+                 </div>
+
+                 <div class="col-6 col-md-4">
+                     <div class="form-floating ">
+                         <input type="text" class="form-control" placeholder=""  
+                         [(ngModel)]="alimento.dias"   
+                         [ngClass]="{'readonly': true}"                        
+                             [readonly]="true">
+                         <label>Días</label>
+                     </div>
+                 </div>
+                 <div class="col-6 col-md-4">
+                    <div class="form-floating ">
+                        <input type="number" class="form-control" placeholder=""
+                            [(ngModel)]="alimento.monto_format"
+                            [ngClass]="{'is-invalid': alimentoFormVal.monto_format}"
+                            (blur)="validarInputAlimento('monto_format')"
+                            [ngClass]="{'readonly': true}"
+                            [readonly]="true">
+                        <label>Monto</label>
+                    </div>
+                </div>
+                 <div class="col-12 col-md-12">
+                    <div class="form-floating ">
+                        <textarea class="form-control" placeholder="" 
+                        [(ngModel)]="alimento.detalle"   
+                             ></textarea>
+                         <label>Detalle</label>   
+                    </div>
+                </div>
+           
+           
+             </div>
+         </div>
+         <div class="modal-footer">
+             <!-- <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+         @if(isDeleteModalDetalle===false){
+             <button type="button" class="btn btn-secondary" (click)="agregarDetalle()">{{detalle.index>=0 ? 'Editar': 'Agregar'}}</button>
+         }@else {
+             <button type="button" class="btn btn-danger" (click)="agregarDetalle()">Eliminar</button>
+         }  
+          -->
+             @if(alimento.id ){
+             <button type="button" class="btn btn-danger mx-2" (click)="changeAlimento('remove', alimento.id)">
+                 Remover
+             </button>
+             }
+             <button type="button" class="btn btn-lg btn-outline-secondary mx-2"
+                 data-bs-dismiss="modal">Cerrar</button>
+
+             <button type="button" class="btn btn-lg btn-secondary mx-2"
+                 (click)="changeAlimento(alimento.id ? 'edit': 'add', alimento.id)">
+                 {{alimento.id ? 'Editar': 'Agregar'}}
+             </button>
+         </div>
+     </div>
+ </div>
+</div>
+
+
+<div class="row mb-3 g-2 align-items-end mt-4">
+    <div class="col-auto">
+        <h3 class="text-secondary fst-italic">Planificación de Traslados</h3>
+    </div>
+
+    <div class="col-6 col-md-3 text-end flex-fill">
+        <button class="btn btn-outline-danger" (click)="openModalTrasladosAgregar()">
+            <i class="fa-solid fa-plus fs-4 mx-1"></i>
+        </button>
+
+    </div>
+</div>
+<div class="table-responsive  rounded ">
+    <table class="table table-hover ">
+        <thead style="position: sticky;top: 0">
+            <tr>
+
+                <th scope="col" class="text-danger text-center">#</th>
+                <th scope="col" class="text-danger">Ciudad</th>
+                <th scope="col" class="text-danger">Fecha</th>
+                <th scope="col" class="text-danger">Lugar Origen</th>
+                <th scope="col" class="text-danger">Lugar Destino</th>
+                <th scope="col" class="text-danger">Monto S/. {{traslado_monto}} </th>
+                <th scope="col" class="text-danger">Cliente o zona visitada</th>              
+                <!-- <th scope="col" class="col-fixed text-center m-0 p-0 "></th> -->
+            </tr>
+        </thead>
+
+        <tbody class=" ">
+            <tr *ngFor="let traslado of traslados; let i = index"
+                (click)="openModalTrasladoEdit(traslado.id)"
+            >
+                <td class="text-center ">
+                    <div class="d-flex no-wrap justify-content-center align-items-center">
+                        <span>{{i+1}}</span>
+                        <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                    </div>
+                </td>
+                <td class=" ">{{traslado.ciudad.nombre}}</td>
+                <td class=" ">{{traslado.fecha}}</td>
+                <td class=" ">{{traslado.lugar_origen}}</td>
+                <td class=" ">{{traslado.lugar_destino}}</td>
+                <td class=" ">{{traslado.monto_format}}</td>
+                <td class=" ">{{traslado.detalle}}</td>        
+            </tr>
+        </tbody>
+    </table>
+</div>
+ <!-- Modal Form Traslados -->
+ <div class="modal fade " id="modalFormTraslados" tabindex="-1" aria-labelledby="modalFormTrasladosLabel"
+ aria-hidden="true">
+ <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h1 class="modal-title fs-4 text-secondary" id="modalFormTrasladosLabel">
+                Traslados
+             </h1>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+             <div class="row g-2 mb-2">
+                 <div class="col-12 col-md-12 d-flex">
+                     <div class="form-floating flex-fill">
+                         <textarea class="form-control" placeholder="" 
+                             [(ngModel)]="detalle.observacion"></textarea>
+                         <label>Observacion</label>                              
+                     </div>
+                     <button class="btn" (click)="setObservacionDetalle()" >
+                         <i class="fa-solid fa-eye text-danger"></i>
+                     </button>
+                 </div>
+             </div>
+             <div class="row g-2">
+                <div class="col-6 col-md-4">
+                    <div class="form-floating">
+                        <select class="form-select" [(ngModel)]="traslado.id_ciudad"
+                            [ngClass]="{'is-invalid': trasladoFormVal.id_ciudad}"                            
+                            (blur)="validarInputTraslado('id_ciudad')"                                 
+                            >
+                            <option value="">Seleccione</option>
+                            <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">{{ ciudad.nombre }}
+                            </option>
+
+                        </select>
+                        <label>Ciudad </label>
+                    </div>
+                </div>
+      
+                 <div class="col-6 col-md-4">
+                     <div class="form-floating ">                    
+                         <input 
+                         [(ngModel)]="traslado.fecha" 
+                         [ngClass]="{'is-invalid': trasladoFormVal.fecha}"
+                         (blur)="validarInputTraslado('fecha')" 
+                         
+                             type="date" class="form-control">
+                         <label>Fecha </label>
+                     </div>
+                 </div>
+                 <div class="col-6 col-md-4">
+                     <div class="form-floating ">
+                         <input type="text" class="form-control"
+                         [(ngModel)]="traslado.lugar_origen" 
+                         [ngClass]="{'is-invalid': trasladoFormVal.lugar_origen}"
+                         (blur)="validarInputTraslado('lugar_origen')" 
+                         >
+                         <label>Lugar Origen</label>
+                     </div>
+                 </div>
+                 <div class="col-6 col-md-4">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control"
+                        [(ngModel)]="traslado.lugar_destino" 
+                        [ngClass]="{'is-invalid': trasladoFormVal.lugar_destino}"
+                        (blur)="validarInputTraslado('lugar_destino')" 
+                        >
+                        <label>Lugar Destino</label>
+                    </div>
+                </div>
+             
+
+                 <div class="col-6 col-md-4">
+                     <div class="form-floating ">
+                         <input type="number" class="form-control" placeholder=""
+                         [(ngModel)]="traslado.monto_format" 
+                         [ngClass]="{'is-invalid': trasladoFormVal.monto_format}"
+                         (blur)="validarInputTraslado('monto_format')"   
+                         >
+                         <label>Monto</label>
+                     </div>
+                 </div>
+                 <div class="col-12 col-md-12">
+                    <div class="form-floating ">
+                        <textarea class="form-control" placeholder="" 
+                        [(ngModel)]="traslado.detalle"                         
+                             ></textarea>
+                         <label>Detalle cliente o zona visitada</label>   
+                    </div>
+                </div>
+             </div>
+         </div>
+         <div class="modal-footer">
+             @if(traslado.id){
+             <button type="button" class="btn btn-danger mx-2" (click)="changeTraslados('remove', traslado.id)">
+                 Remover
+             </button>
+             }
+             <button type="button" class="btn btn-lg btn-outline-secondary mx-2"
+                 data-bs-dismiss="modal">Cerrar</button>
+
+             <button type="button" class="btn btn-lg btn-secondary mx-2"
+                 (click)="changeTraslados(traslado.id ? 'edit': 'add', traslado.id)"
+                 >
+                 {{traslado.id ? 'Editar': 'Agregar'}}
+             </button>
+         </div>
+     </div>
+ </div>
+</div>
+
+<!-- OTROS -->
+
+<div class="row mb-3 g-2 align-items-end mt-4">
+    <div class="col-auto">
+        <h3 class="text-secondary fst-italic">Otros</h3>
+    </div>
+
+    <div class="col-6 col-md-3 text-end flex-fill">
+        <button class="btn btn-outline-danger" (click)="openModalOtrosAgregar()">
+            <i class="fa-solid fa-plus fs-4 mx-1"></i>
+        </button>
+
+    </div>
+</div>
+<div class="table-responsive  rounded ">
+    <table class="table table-hover ">
+        <thead style="position: sticky;top: 0">
+            <tr>
+
+                <th scope="col" class="text-danger text-center">#</th>
+                <th scope="col" class="text-danger">Tipo</th>
+                <th scope="col" class="text-danger">Monto S/. {{otro_monto}} </th>    
+                <th scope="col" class="text-danger">Detalle</th>
+            </tr>
+        </thead>
+
+        <tbody class=" ">
+            <tr *ngFor="let otro of otros; let i = index"
+                (click)="openModalOtroEdit(i)"
+            >
+                <td class="text-center ">
+                    <div class="d-flex no-wrap justify-content-center align-items-center">
+                        <span>{{i+1}}</span>
+                        <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                    </div>
+                </td>
+                <td class=" ">{{otro.tipo_otros}}</td>
+                <td class=" ">{{otro.monto_format}}</td>
+                <td class=" ">{{otro.detalle}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+ <!-- Modal Form OTROS -->
+ <div class="modal fade " id="modalFormOtros" tabindex="-1" aria-labelledby="modalFormOtrosLabel"
+ aria-hidden="true">
+ <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+     <div class="modal-content">
+         <div class="modal-header">
+             <h1 class="modal-title fs-4 text-secondary" id="modalFormOtrosLabel">
+                Otros
+             </h1>
+             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+             <div class="row g-2 mb-2">
+                 <div class="col-12 col-md-12 d-flex">
+                     <div class="form-floating flex-fill">
+                         <textarea class="form-control" placeholder="" 
+                             [(ngModel)]="otro.observacion"></textarea>
+                         <label>Observacion</label>                              
+                     </div>
+                     <button class="btn" (click)="setObservacionDetalle()" >
+                         <i class="fa-solid fa-eye text-danger"></i>
+                     </button>
+                 </div>
+             </div>
+             <div class="row g-2">
+                <div class="col-6 col-md-6">
+                    <div class="form-floating">
+                        <select class="form-select" [(ngModel)]="otro.tipo_otros"
+                            [ngClass]="{'is-invalid': otroFormVal.tipo_otros}"                            
+                            (blur)="validarInputOtros('tipo_otros')"                                 
+                            >
+                            <option value="">Seleccione</option>
+                            <option value="CURIER">Curier</option>
+                            <option value="OTROS">Otros</option>
+
+                        </select>
+                        <label>Tipo </label>
+                    </div>
+                </div>
+                 <div class="col-6 col-md-6">
+                     <div class="form-floating ">
+                         <input type="number" class="form-control" placeholder=""
+                         [(ngModel)]="otro.monto_format" 
+                         [ngClass]="{'is-invalid': otroFormVal.monto_format}"
+                         (blur)="validarInputOtros('monto_format')"   
+                         >
+                         <label>Monto</label>
+                     </div>
+                 </div>
+                 <div class="col-12 col-md-12">
+                    <div class="form-floating ">
+                        <textarea class="form-control" placeholder="" 
+                        [(ngModel)]="otro.detalle"                         
+                             ></textarea>
+                         <label>Detalle </label>   
+                    </div>
+                </div>
+             </div>
+         </div>
+         <div class="modal-footer">
+             @if(otro.id){
+             <button type="button" class="btn btn-danger mx-2" (click)="changeOtros('remove', otro.id)">
+                 Remover
+             </button>
+             }
+             <button type="button" class="btn btn-lg btn-outline-secondary mx-2"
+                 data-bs-dismiss="modal">Cerrar</button>
+
+             <button type="button" class="btn btn-lg btn-secondary mx-2"
+                 (click)="changeOtros(otro.id? 'edit': 'add', otro.id)">
+                 {{otro.id ? 'Editar': 'Agregar'}}
+             </button>
+         </div>
+     </div>
+ </div>
+</div>
+
+<div class="row mb-3 g-2 align-items-end mt-4">
+    <div class="col-auto">
+        <h3 class="text-secondary fst-italic">Liquidación</h3>
+    </div>
+
+    <div class="col-6 col-md-3 text-end flex-fill">
+        <button class="btn btn-outline-danger" 
+        (click)="openModalLiquidacion()"
+        >
+            <i class="fa-solid fa-plus fs-4 mx-1"></i>
+        </button>
+
+    </div>
+</div>
+
+ 
+    <div class="table-responsive  rounded ">
+        <table class="table table-hover ">
+            <thead style="position: sticky;top: 0">
+                <tr>
+                    <th scope="col" class="text-danger ">#</th>
+                    <th scope="col" class="text-danger ">Total <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_total_format}}</span></th>
+                    <th scope="col" class="text-danger ">Igv  <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_igv_format}}</span></th>
+                    <th scope="col" class="text-danger ">A Pagar <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_a_pagar_format}}</span></th> 
+                    <th scope="col" class="text-danger ">Moneda</th>
+                    <th scope="col" class="text-danger ">Documento</th>
+                    <th scope="col" class="text-danger ">Tipo Documento</th>
+                    <th scope="col" class="text-danger ">Razon Social</th>
+                    <th scope="col" class="text-danger ">Divisionaria 1</th>
+                    <th scope="col" class="text-danger ">Divisionaria 2</th>
+                    <th scope="col" class="text-danger ">Divisionaria 3</th>
+                </tr>
+            </thead>
+
+            <tbody class=" ">
+                <tr *ngFor="let liquidacion of liquidaciones; let i = index"
+                (click)="openModalLiquidacionEdit(liquidacion.id)"
+            >
+                <td class="text-center ">
+                    <div class="d-flex no-wrap justify-content-center align-items-center">
+                        <span>{{i+1}}</span>
+                        <i class="fa-solid fa-circle  mx-1 table-circle-estado"  [ngStyle]="{ '--color-var': liquidacion.estado.indicador }"></i>
+                    </div>
+                </td>
+                <td class=" ">{{liquidacion.total_format}}</td>
+                <td class=" ">{{liquidacion.total_igv_format}}</td>
+                <td class=" ">{{liquidacion.a_pagar_format}}</td>
+                <td class=" ">{{liquidacion.moneda.nombre}}</td>
+                <td class=" ">{{liquidacion.serie}}-{{liquidacion.numero}}</td>
+                <td>{{liquidacion.comprobante.nombre}}</td>
+                <td class=" ">{{liquidacion.proveedor.razon_social}}</td>
+                <td class=" ">{{liquidacion.gastos_n1.nombre}}</td>   
+                <td class=" ">{{liquidacion.gastos_n2.nombre}}</td>    
+                <td class=" ">{{liquidacion.gastos_n3.nombre}}</td>      
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+
+
+
+<app-modal-liquidacion></app-modal-liquidacion>

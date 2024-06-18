@@ -1,0 +1,115 @@
+<app-sidenav> 
+
+
+  <div name="requerimiento-viaticos" class="pb-5 ">
+    <div class="d-flex justify-content-between pt-5"> 
+      <div>
+        <span class="fs-1 fw-light fst-italic text-secondary">Requerimiento de Viaticos</span>
+      </div>
+      <div class="">
+        <button class="btn btn-lg btn-danger" [routerLink]="['/requerimiento_viaticos_form']">Crear</button>
+      </div>
+    </div>
+   
+  
+    <div class="row g-2 my-3">
+      <div class="col-6 col-md-4">
+        <div class="form-floating">
+          <input type="date" class="form-control" placeholder="Fecha"  [(ngModel)]="queryParams.fecha_desde"/>
+          <label>Fecha Desde</label>
+        </div>
+      </div>
+      <div class="col-6 col-md-4">
+        <div class="form-floating">
+          <input type="date" class="form-control" placeholder="Fecha"  [(ngModel)]="queryParams.fecha_hasta"/>
+          <label>Fecha Hasta</label>
+        </div>
+      </div>
+      <div class="col-12 col-md-4  ">
+        <div class="form-floating">
+          <select  class="form-select" placeholder="Estado" [(ngModel)]="queryParams.id_estado">
+            <option value="">Seleccione</option>
+            <option *ngFor="let estado of estadosRequemiento" [value]="estado.id">{{ estado.nombre }}
+            </option>
+          </select>
+          <label>Estado</label>
+        </div>
+      </div>
+      <div class="col-12 col-md-4 ">
+        <div class="form-floating  ">
+          <input type="text" class="form-control" placeholder="" [(ngModel)]="queryParams.texto"/>
+          <label>Persona, Ciudad</label>
+        </div>
+  
+      </div>
+      <div class="col-6 col-md-4 d-flex flex-fill justify-content-end">
+        
+        <button class="btn btn-lg btn-outline-secondary" (click)="buscarRequerimientos()" [disabled]="loadingBuscar">
+          <i *ngIf="!loadingBuscar" class="fa-solid fa-magnifying-glass"></i>
+          <app-spinner *ngIf="loadingBuscar" class="text-secondary"></app-spinner>
+        </button>
+      </div>
+    </div>
+  
+    <div class="table-responsive rounded">
+      <table class="table table-hover" #tablaElemento>
+        <thead style="position: sticky; top: 0">
+          <tr class="text-danger">
+            <th scope="col" class="text-danger">Estado</th>
+            <th scope="col" class="text-danger">Monto S/</th>
+            <th scope="col" class="text-danger box_large">Viaje</th>
+            <!-- <th scope="col" class="text-danger ">Sede</th> -->
+            <th scope="col" class="text-danger box_large">Usuario</th>
+            <th scope="col" class="text-danger box_large">Fecha Creacion</th>
+          </tr>
+        </thead>
+  
+        <tbody class=" ">
+          <tr *ngFor="let req of requerimientos; let i = index" (click)="editRequerimiento(req.id)" >
+            <td class=" ">
+                <div class="d-flex no-wrap justify-content-start align-items-center">
+                    <span>{{i+1}}</span>
+                    <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                </div>
+            </td>
+            <td class=""><i class="fa-solid fa-dollar-sign text-success"></i> {{req.monto_total}} <br> {{req.total_dias}} Días</td>
+            <td class="">{{req.dia_inicio}} {{req.fecha_inicio}} <br> {{req.dia_fin}} {{ req.fecha_fin}}</td>
+            <!-- <td class="">
+              
+              @if(req.requerimiento_detalle.length>0){
+                <div class="d-flex no-wrap align-items-center">
+                  <div class="px-1">
+                    <i class="fa-solid fa-location-dot text-primary"></i>
+                  </div>
+                  <div> 
+                    {{req.requerimiento_detalle[0].ciudad.nombre}} <br> 
+                    {{ req.requerimiento_detalle[req.requerimiento_detalle.length-1].ciudad.nombre}}</div>
+                </div>
+                
+              }
+            </td> -->
+            <td>{{req.user.nombres}} {{req.user.apellidos}}</td>
+            <td>
+              {{req.fecha_creacion}}<i class="fa-solid fa-circle-plus text-secondary px-1"></i> <br> 
+              {{ req.fecha_edicion}}<i class="fa-solid fa-pen text-secondary px-1"></i>
+            </td>
+            <!-- <td class="text-center col-fixed m-0 p-0">
+                <div class="d-flex no-wrap">
+                    <app-edit-icon (click)="openModaRutaEditar(i)" ></app-edit-icon>
+                    <app-delete-icon (click)="openModanEliminarRuta(i)"></app-delete-icon>
+                </div>                                               
+            </td> -->
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-end col-12">    
+      <button class="btn btl-lg btn-secondary px-4" (click)="cargarRequerimientos()" [disabled]="loadingBuscar">
+        <app-spinner *ngIf="loadingBuscar" class="text-secondary"></app-spinner>
+        <i *ngIf="!loadingBuscar" class="fa-solid fa-angles-down"  ></i>
+      </button>
+    </div>
+  </div>
+  
+</app-sidenav>
+

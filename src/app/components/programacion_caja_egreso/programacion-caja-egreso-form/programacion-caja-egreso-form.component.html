@@ -1,0 +1,487 @@
+<h1 mat-dialog-title>{{esSolicitud ? 'Solicitud': 'Programación'}} de Pago</h1>
+<div mat-dialog-content class="col-12 ">
+  <form [formGroup]="programacionPagoForm" class="row g-3 mt-2">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Codigo</mat-label>
+        <input matInput type="text" formControlName="codigo" [readonly]="true">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Fecha Solicitud</mat-label>
+        <input matInput [matDatepicker]="pickerFechaGasto" formControlName="fecha_solicitud">
+        <mat-hint>DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="pickerFechaGasto"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFechaGasto></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Fecha Tentativa Pago</mat-label>
+        <input matInput [matDatepicker]="pickerTentativaPago" formControlName="fecha_tentativa_pago">
+        <mat-hint>DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="pickerTentativaPago"></mat-datepicker-toggle>
+        <mat-datepicker #pickerTentativaPago></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <!-- <button type="button" (click)="setComprobante()">clic</button> -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Estado Solicitud</mat-label>
+        <mat-select matInput formControlName="estado" class="select">
+          <mat-option *ngFor="let estado of estadosSolicitudProgramacion" [value]="estado"
+            [disabled]="isEditMode  ? false : true" (onSelectionChange)="onSelectEstado($event, estado)">
+            {{ estado.nombre }}
+          </mat-option>
+
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Tipo Solicitud</mat-label>
+        <mat-select matInput formControlName="tipo" class="select" (ngModelChange)="onTipoGastoChange($event)">
+          <mat-option *ngFor="let tipo of tiposSolicitudProgramacion" [value]="tipo">
+            {{ tipo.nombre }}
+          </mat-option>
+
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div *ngIf="isRequired('total')">
+      <span>Requisitos</span><mat-divider></mat-divider>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('moneda')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Moneda</mat-label>
+        <mat-select matInput formControlName="moneda" class="select" >
+          @for (moneda of tiposMoneda; track moneda) {
+          <mat-option [value]="moneda" (onSelectionChange)="resetToNumerosCuenta($event, 'moneda')">{{moneda.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('comprobante')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Tipo Documento</mat-label>
+        <mat-select matInput formControlName="comprobante" class="select">
+          <mat-option *ngFor="let comprobante of comprobantes" [value]="comprobante">
+            {{ comprobante.nombre }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('banco')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Banco</mat-label>
+        <mat-select matInput formControlName="banco" class="select">
+          @for (banco of bancos; track banco) {
+          <mat-option [value]="banco" (onSelectionChange)="resetToNumerosCuenta($event ,'banco')">{{banco.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('banco_origen')">
+      <mat-form-field class="input" appearance="outline" >
+        <mat-label>Banco Origen</mat-label>
+        <mat-select matInput formControlName="banco_origen" class="select" placeholder="">
+          @for (banco of bancos; track banco) {
+            <mat-option [value]="banco" (onSelectionChange)="resetToNumerosCuenta($event,'banco_origen')">{{banco.nombre}}</mat-option>
+            }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('banco_destino')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Banco Destino</mat-label>
+        <mat-select matInput formControlName="banco_destino" class="select" placeholder="">
+          @for (banco of bancos; track banco) {
+            <mat-option [value]="banco" (onSelectionChange)="resetToNumerosCuenta($event,'banco_destino')">{{banco.nombre}}</mat-option>
+            }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('empresa')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Empresa</mat-label>
+        <mat-select matInput formControlName="empresa" class="select" placeholder="" >
+          @for (empresa of empresas; track empresa) {
+          <mat-option [value]="empresa" (onSelectionChange)="getEmpresaBancoCuentas($event, empresa, 'empresa')">{{empresa.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_cuenta')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero Cuenta Empresa</mat-label>
+        <mat-select matInput formControlName="numero_cuenta" class="select" placeholder="Sel. moneda, empresa, banco">
+          @for (cuenta of empresaBancoCuentas; track cuenta) {
+            <mat-option [value]="cuenta">{{cuenta}}</mat-option>
+            }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('empresa_origen')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Empresa Origen</mat-label>
+        <mat-select matInput formControlName="empresa_origen" class="select" placeholder="">
+          @for (empresa of empresas; track empresa) {
+          <mat-option [value]="empresa" (onSelectionChange)="getEmpresaBancoCuentas($event,empresa,'empresa_origen')">{{empresa.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_cuenta_origen')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Cuenta Empresa Origen</mat-label>
+        <mat-select matInput formControlName="numero_cuenta_origen" class="select" placeholder="">
+          @for (cuenta of empresaBancoCuentasOrigen; track cuenta) {
+            <mat-option [value]="cuenta">{{cuenta}}</mat-option>
+            }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('empresa_destino')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Empresa Destino</mat-label>
+        <mat-select matInput formControlName="empresa_destino" class="select" placeholder="">
+          @for (empresa of empresas; track empresa) {
+            <mat-option [value]="empresa" (onSelectionChange)="getEmpresaBancoCuentas($event,empresa,'empresa_destino')">{{empresa.nombre}}</mat-option>
+            }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_cuenta_destino')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Cuenta Empresa Destino</mat-label>
+        <mat-select matInput formControlName="numero_cuenta_destino" class="select" placeholder="">
+          @for (cuenta of empresaBancoCuentasDestino; track cuenta) {
+            <mat-option [value]="cuenta">{{cuenta}}</mat-option>
+            }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+   
+
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('sede')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Sede</mat-label>
+        <mat-select matInput formControlName="sede" class="select">
+          @for (sede of sedes; track sede) {
+          <mat-option [value]="sede">{{sede.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('proveedor')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Razon Social</mat-label>
+        <input type="text" matInput [formControl]="myControlProveedor" [matAutocomplete]="auto"
+          (keydown.enter)="onEnterProveedor($event)">
+        @if(isProveedorLoading){
+        <mat-icon matSuffix><i class="fa-solid fa-spinner spinner-input"></i> </mat-icon>
+        }
+        <mat-autocomplete #auto="matAutocomplete">
+          @for (option of filteredProveedor | async; track option) {
+          <mat-option [value]="option" (onSelectionChange)="onSelectProveedor($event, option)">{{option}}</mat-option>
+          }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 " *ngIf="isRequired('ruc')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Ruc </mat-label>
+        <input type="text" matInput formControlName="ruc" [readonly]="true" placeholder="Seleccione Proveedor">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 " *ngIf="isRequired('numero_cuenta_proveedor')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero Cuenta Razon Social</mat-label>
+        <mat-select matInput formControlName="numero_cuenta_proveedor" class="select"
+          placeholder="Selec: Prov, Banco y Moneda">
+          @for (numero_cuenta of proveedorNumerosCuenta; track numero_cuenta) {
+          <mat-option [value]="numero_cuenta">{{numero_cuenta}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('tipo_pago')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Tipo Pago</mat-label>
+        <mat-select matInput formControlName="tipo_pago" class="select"
+          placeholder="">
+          @for (tipo of tiposPago; track tipo) {
+          <mat-option [value]="tipo">{{tipo.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('tipo_seguro')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Tipo Seguro</mat-label>
+        <mat-select matInput formControlName="tipo_seguro" class="select"
+          placeholder="">
+          @for (tipo of tiposSeguros; track tipo) {
+          <mat-option [value]="tipo">{{tipo.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('tipo_afp')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Tipo AFP</mat-label>
+        <mat-select matInput formControlName="tipo_afp" class="select"
+          placeholder="">
+          @for (tipo of tiposAfp; track tipo) {
+          <mat-option [value]="tipo">{{tipo.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('pais')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Pais</mat-label>
+        <mat-select matInput formControlName="pais" class="select"
+          placeholder="">
+          @for (pais of paises; track pais) {
+          <mat-option [value]="pais">{{pais.nombre}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('mes')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Meses</mat-label>
+        <mat-select matInput formControlName="mes" class="select"
+          placeholder="">
+          @for (mes of meses; track mes) {
+          <mat-option [value]="mes">{{mes}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('serie')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Serie </mat-label>
+        <input type="text" matInput formControlName="serie">
+      </mat-form-field>
+    </div>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero </mat-label>
+        <input type="text" matInput formControlName="numero">
+      </mat-form-field>
+    </div>
+
+    
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_contrato')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero Contrato</mat-label>
+        <input type="text" matInput formControlName="numero_contrato">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_cuota')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero Cuota</mat-label>
+        <input type="number" matInput formControlName="numero_cuota">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('trabajador')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Trabajador</mat-label>
+        <mat-select matInput formControlName="trabajador" class="select" placeholder="">
+          @for (trabajador of trabajadores; track trabajador) {
+          <mat-option [value]="trabajador" (onSelectionChange)="onSelectTrabajador($event, trabajador)">{{trabajador.nombres}} {{trabajador.apellidos}}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_cuenta_trabajador')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero Cuenta Trabajador</mat-label>
+        <input type="text" matInput formControlName="numero_cuenta_trabajador">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('tipo_deposito')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Tipo Deposito</mat-label>
+        <input type="text" matInput formControlName="tipo_deposito">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('numero_requerimiento')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Numero Requerimiento</mat-label>
+        <input type="text" matInput formControlName="numero_requerimiento">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('ruta')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Ruta</mat-label>
+        <input type="text" matInput formControlName="ruta">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('origen_viaje')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Origen Viaje</mat-label>
+        <input type="text" matInput formControlName="origen_viaje">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('destino_viaje')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Destino Viaje</mat-label>
+        <input type="text" matInput formControlName="destino_viaje">
+      </mat-form-field>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('codigo_pago_viaje')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Codigo Pago Viaje</mat-label>
+        <input type="text" matInput formControlName="codigo_pago_viaje">
+      </mat-form-field>
+    </div>
+
+
+
+    <div class="col-12 " *ngIf="isRequired('glosa')">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Glosa</mat-label>
+        <textarea matInput matInput formControlName="glosa" placeholder=""></textarea>
+      </mat-form-field>
+    </div>
+
+
+    <div *ngIf="isRequired('total')">
+      Montos<mat-divider></mat-divider>
+    </div>
+
+    <div class="col-12 row g-3 p-0 m-0">
+
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('total')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>Total </mat-label>
+          <input type="number" matInput formControlName="total">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('tasa_detraccion')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>Tasa Detracción</mat-label>
+          <input type="number" matInput formControlName="tasa_detraccion">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('total_detraccion')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>Total Detracción </mat-label>
+          <input type="number" matInput formControlName="total_detraccion">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('tasa_retencion')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>Tasa Retención</mat-label>
+          <input type="number" matInput formControlName="tasa_retencion">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('total_retencion')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>Total Retención</mat-label>
+          <input type="number" matInput formControlName="total_retencion">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('total_igv')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>Total Igv</mat-label>
+          <input type="number" matInput formControlName="total_igv">
+        </mat-form-field>
+      </div>
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngIf="isRequired('a_pagar')">
+        <mat-form-field class="input" appearance="outline">
+          <mat-label>A Pagar</mat-label>
+          <input type="number" matInput formControlName="a_pagar">
+        </mat-form-field>
+      </div>
+
+
+    </div>
+
+
+
+
+    <mat-dialog-content class="mb-3">
+      <!-- app.component.html -->
+      <button mat-button color="primary" (click)="fileInput.click()" type="button">
+        <mat-icon>upload</mat-icon> Cargar Archivos
+      </button>
+      <input type="file" #fileInput multiple (change)="onFileSelected($event)" style="display: none;" />
+
+      <!-- <input type="file" (change)="onFileSelected($event)" multiple> -->
+      <!-- @if (programacionPagoForm.controls['files'].value.length >0 ) { -->
+      <div class="file-preview" *ngFor="let file of programacionPagoForm.controls['files'].value; let i = index">
+        <span>{{ file.name }}</span>
+        <button mat-icon-button type="button" (click)="downloadFile(file)">
+          <mat-icon>download</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="removeFile(i)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <!-- } -->
+      <!-- @if(programacionPagoForm.controls['archivos'].value.length > 0){ -->
+      <div class="file-preview" *ngFor="let archivo of programacionPagoForm.controls['archivos'].value; let i = index">
+        <span>{{ archivo.nombre }}</span>
+        <button mat-icon-button type="button" (click)="downloadArchivo(archivo.id, archivo.nombre)">
+          <mat-icon>download</mat-icon>
+        </button>
+        <button mat-icon-button type="button" (click)="removeArchivo(archivo.id)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+
+    </mat-dialog-content>
+
+  </form>
+</div>
+<mat-divider></mat-divider>
+<div mat-dialog-actions>
+
+  <button mat-stroked-button type="button" (click)="close()">Cancelar</button>
+  <button mat-stroked-button color="warn" type="button" *ngIf="isEditMode" (click)="deleteItem()">Eliminar</button>
+  <button mat-flat-button color="primary" type="button" (click)="save()">{{ isEditMode ? 'Editar' : 'Guardar'
+    }}</button>
+</div>
+
+<div *ngIf="isDataloading" class="spinner-overlay">
+  <mat-spinner color="primary"></mat-spinner>
+</div>

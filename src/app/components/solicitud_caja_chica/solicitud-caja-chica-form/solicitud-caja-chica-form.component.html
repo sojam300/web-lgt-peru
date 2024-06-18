@@ -1,0 +1,284 @@
+<app-sidenav>
+    <div class="contenido container-fluid">
+            
+<div name="requerimiento-viaticos " class="mb-3 border-bottom border-2 rounded">
+    <div class="d-flex justify-content-between pt-5 ">
+        <div>
+            <span class="fs-1 fw-light fst-italic text-secondary">{{solicitud.id? 'Editar':'Crear'}} Solicitud</span>
+        </div>
+        <div class="i-return " [routerLink]="['/solicitud_caja_chica_list']">
+            <i class="bi bi-arrow-return-right fw-bold fs-2 text-danger"></i>
+        </div>
+    </div>
+    <div class="d-flex col-12 py-3"  >
+        <div class=" d-flex no-wrap justify-content-center align-items-center box_estado" 
+        *ngFor="let estado of estadosSolicitud; let i = index"
+            (click)="confirmBox(estado.id, estado.nombre)"       
+            [ngStyle]="{ '--color-var': estado.indicador }"
+        >
+            <div class="btn_estado " 
+            [ngClass]="{'active': estado.existe ? true: false}"
+     
+            ></div>
+            <label class="">{{estado.nombre}}</label>
+        </div>   
+    </div>
+    
+    <div class="row g-2">
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <input [(ngModel)]="solicitud.codigo" type="text" class="form-control readonly" [readOnly]="true" >
+                <label>Codigo Solicitud</label>
+            </div>
+        </div>
+    
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <select 
+                [(ngModel)]="solicitud.id_sede" 
+                (blur)="validarInputSolicitud('id_sede')"
+                [ngClass]="{'is-invalid': solicitud_form_val.id_sede}"
+                (change)="buscarCajaChicaPorSede(solicitud.id_sede)"
+                class="form-select">
+                    <option value="">Seleccion</option>
+                    <option *ngFor="let sede of sedes" [value]="sede.id">{{ sede.nombre }}</option>
+                </select>
+                <label>Sede</label>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <input [(ngModel)]="solicitud.caja.codigo" type="text" class="form-control readonly" [readOnly]="true" >
+                <label>Caja Asociada</label>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <select [(ngModel)]="solicitud.id_area" 
+                (blur)="validarInputSolicitud('id_area')"
+                [ngClass]="{'is-invalid': solicitud_form_val.id_area}"
+                class="form-select">
+                    <option value="">Seleccion</option>
+                    <option *ngFor="let area of areasByUser" [value]="area.area.id">{{ area.area.nombre }}</option>
+                </select>
+                <label>Area</label>
+            </div>
+        </div>
+
+
+        <div class="col-6 col-md-3">
+            <div class="form-floating ">
+                <select 
+                (blur)="validarInputSolicitud('id_persona')"
+                [ngClass]="{'is-invalid': solicitud_form_val.id_persona}"    
+                [(ngModel)]="solicitud.id_persona" 
+                    class="form-select">
+                    <option value={{solicitud.id_persona}}>{{solicitud.persona.nombres}} {{solicitud.persona.apellidos}}</option>
+                    <option *ngFor="let usuario of usuarios" [value]="usuario.id">{{ usuario.nombres }}</option>
+                </select>
+                <label>Persona</label>
+            </div>
+        </div>
+        <div class="col-12 col-md-12">
+            <div class="form-floating ">
+                <textarea 
+                (blur)="validarInputSolicitud('descripcion')"
+                [ngClass]="{'is-invalid': solicitud_form_val.descripcion}"  
+                [(ngModel)]="solicitud.descripcion" type="text" placeholder="" class="form-control" ></textarea>
+
+                <label>Descripcion</label>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="mb-5 mt-3 text-secondary col-12 text-center">
+        <span>Seleccion Metodos Rembolso Disponible</span>
+        <div class="d-flex flex-row justify-content-center  ">
+        
+            <div *ngFor="let metodoRembolso of metodosRembolsoDisponible" class="form-check">
+                <input class="p-1 m-1 form-check-input" type="checkbox" 
+                    [value]="metodoRembolso.id" 
+                    [checked]="metodoRembolso.existe"
+                    id= {{metodoRembolso.nombre}} 
+                    (click)="onChangeMetodoRembolso($event, metodoRembolso.id)"         
+                    >
+                <label class="p-0 m-0 form-check-label" for= {{metodoRembolso.nombre}}>
+                    {{metodoRembolso.nombre}}
+                </label>
+            </div>       
+        </div>
+    </div>
+
+    <div class="text-center col-auto mt-2 mb-5">
+        <button class="btn btn-lg btn-outline-danger" (click)="guardarSolicitud()">
+            {{solicitud.id?'Editar':'Guardar'}}
+        </button>
+    </div>
+</div>
+
+
+<div class="row my-2 g-2 align-items-end">
+    <div class="col-auto">
+        <h3 class="text-secondary fst-italic">Detalles</h3>
+    </div>
+    <div class="col-6 col-md-3 text-end flex-fill">
+        <button class="btn btn-outline-danger" (click)="openModalDetalle()">
+            <i class="fa-solid fa-plus fs-4 mx-1"></i>
+        </button>
+    </div>    
+</div>
+
+
+<div class="table-responsive  rounded  mb-5">
+    <table class="table table-hover ">
+        <thead style="position: sticky;top: 0">
+            <tr>
+                <th scope="col" class="text-danger text-center">#</th>
+                <th scope="col" class="text-danger">Monto <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_monto_detalle_format}}</span></th> 
+                <th scope="col" class="text-danger ">Item</th>                
+            </tr>
+        </thead>
+
+        <tbody class=" ">
+            <tr *ngFor="let solicitud_detalle of solicitud.solicitud_caja_detalle; let i = index"
+            (click)="openModalDetalleEdit(solicitud_detalle.id)"
+        >
+            <td class="text-center ">
+                <div class="d-flex no-wrap justify-content-center align-items-center">
+                    <span>{{i+1}}</span>
+                    <!-- <i class="fa-solid fa-circle text-secondary mx-1"></i> -->
+                </div>
+            </td>
+            <td class=" ">{{solicitud_detalle.monto_format}}</td>
+            <td class=" ">{{solicitud_detalle.item}}</td>
+    
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal Form Traslados -->
+<div class="modal fade " id="modalDetalleSolcitud" tabindex="-1" aria-labelledby="modalDetalleSolcitudLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-4 text-secondary" id="modalDetalleSolcitudLabel">
+               Detalle
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row g-2">
+              
+                    <div class="col-12 col-md-4">
+                        <div class="form-floating ">
+                            <input [(ngModel)]="solicitud_detalle.monto_format"                             
+                            [ngClass]="{'is-invalid': solicitud_det_form_val.monto_format}"
+                            (blur)="validarInputSolicitudDet('monto_format')"  
+                            type="number" class="form-control "  >
+                            <label>Monto</label>
+                        </div>
+                    </div>
+             
+                    <div class="col-auto flex-fill">
+                        <div class="form-floating ">
+                            <input [(ngModel)]="solicitud_detalle.item" 
+                            [ngClass]="{'is-invalid': solicitud_det_form_val.item}"
+                            (blur)="validarInputSolicitudDet('item')"  
+                            type="text" class="form-control "  >
+                            <label>Item</label>
+                        </div>
+                    </div>
+             
+            </div>
+        </div>
+        <div class="modal-footer">
+            @if(solicitud_detalle.id){
+            <button type="button" class="btn btn-danger mx-2" (click)="changeDetalle('remove', solicitud_detalle.id)">
+                Remover
+            </button>
+            }
+            <button type="button" class="btn btn-lg btn-outline-secondary mx-2"
+                data-bs-dismiss="modal">Cerrar</button>
+
+            <button type="button" class="btn btn-lg btn-secondary mx-2"
+                (click)="changeDetalle(solicitud_detalle.id ? 'edit': 'add', solicitud_detalle.id)"
+                >
+                {{solicitud_detalle.id ? 'Editar': 'Guardar'}}
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+<div class="row my-2 g-2 align-items-end">
+    <div class="col-auto">
+        <h3 class="text-secondary fst-italic">Liquidaciones</h3>
+    </div>
+
+    <div class="col-6 col-md-3 text-end flex-fill">
+        <button class="btn btn-outline-danger" 
+       
+        (click)="openModalLiquidacion()"
+        >
+            <i class="fa-solid fa-plus fs-4 mx-1"></i>
+        </button>
+
+    </div>
+</div>
+
+<div class="table-responsive  rounded  mb-5">
+    <table class="table table-hover ">
+        <thead style="position: sticky;top: 0">
+            <tr>
+
+                <th scope="col" class="text-danger ">#</th>
+                <th scope="col" class="text-danger ">Total <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_total_format}}</span></th>
+                <th scope="col" class="text-danger ">Igv  <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_igv_format}}</span></th>
+                <th scope="col" class="text-danger ">A Pagar <br> <span class=" bg-secondary text-light rounded p-1 fw-light">S/ {{resumen_a_pagar_format}}</span></th> 
+                    <th scope="col" class="text-danger ">Moneda</th>
+                <th scope="col" class="text-danger ">Documento</th>
+                <th scope="col" class="text-danger ">Tipo Documento</th>
+                <th scope="col" class="text-danger ">Razon Social</th>
+                <th scope="col" class="text-danger ">Divisionaria 1</th>
+                <th scope="col" class="text-danger ">Divisionaria 2</th>
+                <th scope="col" class="text-danger ">Divisionaria 3</th>
+        
+            </tr>
+        </thead>
+
+        <tbody class=" ">
+            <tr *ngFor="let liquidacion of liquidaciones; let i = index"
+            (click)="openModalLiquidacionEdit(liquidacion.id)"
+        >
+            <td class="text-center ">
+                <div class="d-flex no-wrap justify-content-center align-items-center">
+                    <span>{{i+1}}</span>
+                    <i class="fa-solid fa-circle text-secondary mx-1"></i>
+                </div>
+            </td>
+            <td class=" ">{{liquidacion.total_format}}</td>
+            <td class=" ">{{liquidacion.total_igv_format}}</td>
+            <td class=" ">{{liquidacion.a_pagar_format}}</td>
+            <td class=" ">{{liquidacion.moneda.nombre}}</td>
+            <td class=" ">{{liquidacion.serie}}-{{liquidacion.numero}}</td>
+            <td>{{liquidacion.comprobante.nombre}}</td>
+            <td class=" ">{{liquidacion.proveedor.razon_social}}</td>
+            <td class=" ">{{liquidacion.gastos_n1.nombre}}</td>   
+            <td class=" ">{{liquidacion.gastos_n2.nombre}}</td>    
+            <td class=" ">{{liquidacion.gastos_n3.nombre}}</td>    
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<app-modal-liquidacion></app-modal-liquidacion>
+    </div>
+</app-sidenav>

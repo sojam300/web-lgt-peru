@@ -1,0 +1,103 @@
+<app-navbar></app-navbar>
+
+<div name="requerimiento-viaticos" class="pb-5 ">
+  <div class="d-flex justify-content-between pt-5"> 
+    <div>
+      <span class="fs-1 fw-light fst-italic text-secondary">Caja Egresos</span>
+    </div>
+    <div class="">
+      <button class="btn btn-lg btn-danger" [routerLink]="['/caja_egresos_form']">Crear</button>
+    </div>
+  </div>
+ 
+
+  <div class="row g-2 my-3">
+    <div class="col-6 col-md-4">
+      <div class="form-floating">
+        <input type="date" class="form-control" placeholder="Fecha"  [(ngModel)]="queryParams.fecha_desde"/>
+        <label>Fecha Desde</label>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="form-floating">
+        <input type="date" class="form-control" placeholder="Fecha"  [(ngModel)]="queryParams.fecha_hasta"/>
+        <label>Fecha Hasta</label>
+      </div>
+    </div>
+    <div class="col-12 col-md-4  ">
+      <div class="form-floating">
+        <select  class="form-select" placeholder="Estado" [(ngModel)]="queryParams.id_estado">
+          <option value="">Seleccione</option>
+          <option *ngFor="let estado of estadosCaja" [value]="estado.id">{{ estado.nombre }}
+          </option>
+        </select>
+        <label>Estado</label>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 ">
+      <div class="form-floating  ">
+        <input type="text" class="form-control" placeholder="" [(ngModel)]="queryParams.texto"/>
+        <label>Persona, Ciudad</label>
+      </div>
+
+    </div>
+
+    <div class="col-6 col-md-4 d-flex flex-fill justify-content-end">
+      <button class="btn btn-lg btn-outline-secondary mx-5" (click)="buscarCajas()" [disabled]="loadingBuscar">
+        <i *ngIf="!loadingBuscar" class="bi bi-download"> Excel</i>
+        <app-spinner *ngIf="loadingBuscar" class="text-secondary"></app-spinner>
+      </button>
+      <button class="btn btn-lg btn-outline-secondary " (click)="buscarCajas()" [disabled]="loadingBuscar">
+        <i *ngIf="!loadingBuscar" class="fa-solid fa-magnifying-glass"></i>
+        <app-spinner *ngIf="loadingBuscar" class="text-secondary"></app-spinner>
+      </button>
+    </div>
+  </div>
+
+  <div class="table-responsive rounded mt-3">
+    <table class="table table-hover" #tablaElemento>
+      <thead style="position: sticky; top: 0">
+        <tr class="text-danger">
+          <th scope="col" class="text-danger">#</th>
+          <th scope="col" class="text-danger">Estado</th>
+          <th scope="col" class="text-danger">Codigo</th>
+          <th scope="col" class="text-danger box_large">Tipo Gasto</th>
+          <th scope="col" class="text-danger ">Sede</th>
+          <th scope="col" class="text-danger box_large">Empresa</th>
+          <th scope="col" class="text-danger box_large">Forma Pago</th>
+          <th scope="col" class="text-danger box_large">Ejecutado Por</th>
+          <th scope="col" class="text-danger ">Fecha Creación</th>
+        </tr>
+      </thead>
+
+      <tbody class=" ">
+        <tr *ngFor="let caja of cajas; let i = index" (click)="editarCaja(caja.id)" >
+          <td class=" ">
+              <div class="d-flex no-wrap justify-content-start align-items-center">
+                  <span>{{i+1}}</span>
+                  <i class="fa-solid fa-circle  mx-1 table-circle-estado"  [ngStyle]="{ '--color-var': caja.estado.indicador }"></i>
+              </div>
+          </td>
+          <td>{{caja.estado.nombre}}</td>  
+          <td>{{caja.codigo}}</td>  
+          <td>{{caja.tipo_gasto.nombre}}</td>  
+          <td>{{caja.sede.nombre}}</td>  
+          <td>{{caja.empresa.nombre}}</td>  
+          <td>{{caja.forma_pago.descripcion}}</td>  
+          <td>{{caja.usuario.nombres}} {{caja.usuario.apellidos}}</td>  
+          <td>
+            {{caja.fecha_creacion}}<i class="fa-solid fa-circle-plus text-secondary px-1"></i> <br> 
+            {{ caja.fecha_edicion}}<i class="fa-solid fa-pen text-secondary px-1"></i>
+          </td>
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- <div class="d-flex justify-content-end col-12">    
+    <button class="btn btl-lg btn-secondary px-4" (click)="cargarRequerimientos()" [disabled]="loadingBuscar">
+      <app-spinner *ngIf="loadingBuscar" class="text-secondary"></app-spinner>
+      <i *ngIf="!loadingBuscar" class="fa-solid fa-angles-down"  ></i>
+    </button>
+  </div> -->
+</div>

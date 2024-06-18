@@ -1,0 +1,55 @@
+<h1 mat-dialog-title>Detalles de Movilidad</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form" class="row g-2 mt-3">
+
+    <div class="col-12">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Fecha Emicion</mat-label>
+        <input matInput [matDatepicker]="pickerFechaGasto" formControlName="fecha_gasto">
+        <mat-hint>DD/MM/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="pickerFechaGasto"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFechaGasto></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Lugar Origen</mat-label>
+        <textarea matInput formControlName="lugar_origen" placeholder="Ex. Compras ferreteria..."></textarea>
+      </mat-form-field>
+    </div>
+    <div class="col-12">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Lugar Destino</mat-label>
+        <textarea matInput formControlName="lugar_destino" placeholder="Ex. Taxi retorno..."></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Motivo </mat-label>
+        <textarea matInput formControlName="motivo"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div class="col-12">
+      <mat-form-field class="input" appearance="outline">
+        <mat-label>Monto </mat-label>
+        <input matInput type="number" formControlName="monto">
+      </mat-form-field>
+    </div>
+
+
+
+
+
+
+
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-stroked-button type="button" (click)="close()">Cancelar</button>
+  <button mat-stroked-button color="warn" type="button" *ngIf="isEditMode" (click)="deleteItem()">Eliminar</button>
+  <button mat-flat-button color="primary" type="button" (click)="save()">{{ isEditMode ? 'Editar' : 'Guardar' }}</button>
+</div>

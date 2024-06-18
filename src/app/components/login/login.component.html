@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center align-items-center vh-100 pb-5">
+    <div class="p-5  rounded text-center bg-light">
+        <div style="height: auto;" class="mb-4">
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="admin_panel_settings"
+             style="font-size: 40px; width: 100%; height: 100%;"  ></mat-icon>             
+        </div>
+        <!-- <div class="mb-4">
+          <h4>Logistic </h4> 
+        </div> -->
+        <div class="col-12 ">
+            <mat-form-field class="input">
+              <mat-label>Correo </mat-label>
+              <input type="email" matInput [(ngModel)]="loginUser.correo" placeholder="Ej. pat@example.com">
+              <button
+                  mat-icon-button          
+                  matSuffix
+                >
+                  <mat-icon>email</mat-icon>
+                </button>
+
+            </mat-form-field>
+        </div>
+        <div class="col-12 ">
+            <!-- <mat-form-field class="input">
+              <mat-label>Password </mat-label>
+              <input type="password" matInput [(ngModel)]="loginUser.password" >
+            </mat-form-field> -->
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'"  [(ngModel)]="loginUser.password" />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  (click)="clickEvent($event)"
+                  [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hide"
+                >
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>
+        </div>
+        <div class="d-grid gap-2">
+            <button mat-flat-button (click)="loggin()" type="button" [disabled]="loading">
+                <span *ngIf="!loading">Ingresar</span> 
+                <app-spinner *ngIf="loading"></app-spinner>
+            </button>            
+        </div>
+
+    </div>
+</div>

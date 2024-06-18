@@ -1,0 +1,75 @@
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary ">
+    <div class="container-fluid">
+      <a class="navbar-brand">Menu</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-between" >
+        <div class="">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown" id="titleDropCajaEgresos" (click)="toggleDropDownCajaEgresos()">
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Caja Egresos
+              </a>
+              <ul class="dropdown-menu" id="dropCajaEgresos" >
+                <li><a class="dropdown-item" [routerLink]="['/caja_egresos_list']">Administrar</a></li>
+                <li><a class="dropdown-item" [routerLink]="['/solicitud_caja_egresos_list']">Solicitudes</a></li>
+                <li><a class="dropdown-item" [routerLink]="['/programacion_caja_egresos_list']">Programación</a></li>
+                           
+              </ul>
+            </li>
+            <li class="nav-item dropdown" id="titleDropCajaChica"  (click)="toggleDropDownCajaChica()">
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Caja Chica
+              </a>
+              <ul class="dropdown-menu" id="dropCajaChica">
+                <li><a class="dropdown-item" [routerLink]="['/caja_chica_list']">Caja Chica</a></li>
+                <li><a class="dropdown-item" [routerLink]="['/solicitud_caja_chica_list']">Solicitudes</a></li>                               
+              </ul>
+            </li>
+            <li class="nav-item dropdown" id="titleDropViaticos"  (click)="toggleDropDownViaticos()">
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Viaticos
+              </a>
+              <ul class="dropdown-menu" id="DropViaticos">
+                <li><a class="dropdown-item" [routerLink]="['/requerimiento_viaticos_list']">Requerimientos</a></li>    
+                <li><a class="dropdown-item" [routerLink]="['/planilla_movilidad_list']">Planilla Movilidad</a></li>    
+                <li><a class="dropdown-item" [routerLink]="['/liquidaciones_list']">Liquidaciones</a></li>                               
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Mantenimientos
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" [routerLink]="['/guardarusuario']">Usuarios</a></li>
+                <li><a class="dropdown-item">Personal</a></li>
+                <li><a class="dropdown-item">Areas</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+        <div class=" me-5 ">          
+            <ul class="navbar-nav ">
+              <li class="nav-item dropdown me-5">
+                <a class="nav-link dropdown-toggle p-0  me-5" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-fill-gear fs-3"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" [routerLink]="['/configuracion']">Configuracion</a></li>
+                  <li><a class="dropdown-item" [routerLink]="['/login']" (click)="logOut()" style="appearance:none;">Cerrar Sesion</a></li>
+                </ul>
+              </li>
+            </ul>        
+          
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+
